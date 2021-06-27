@@ -20,11 +20,11 @@ const ShowPost: React.FC = () => {
         <Flex alignItems="center">
           <Image
             src="/static/Itachi.jpeg"
-            h="30px"
-            w="30px"
+            h="20px"
+            w="20px"
             borderRadius="100px"
           />
-          <Text fontWeight="medium" ml={3}>
+          <Text fontSize="0.9rem" fontWeight="medium" ml={3}>
             Username
           </Text>
           <Text fontSize="0.7rem" ml="auto">
@@ -84,7 +84,7 @@ const ShowPost: React.FC = () => {
           as={BiCommentDetail}
         />
       </Flex>
-      <Box hidden={hidden} mt="1rem" height="200px" pos="sticky">
+      <Box hidden={hidden} mt="1rem" height="300px" pos="sticky">
         <Flex flexDirection="column">
           <Textarea
             ml="2%"
@@ -97,7 +97,7 @@ const ShowPost: React.FC = () => {
             Post
           </Button>
         </Flex>
-        <Box pos="sticky" height="190px" overflowY="auto">
+        <Box pos="sticky" height="150px" overflowY="auto">
           <CommentBox />
           <CommentBox />
           <CommentBox />

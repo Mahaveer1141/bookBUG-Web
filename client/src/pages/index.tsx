@@ -4,9 +4,10 @@ import { MeQuery } from "../utils/MeQuery";
 import { createClient } from "../utils/apolloClient";
 import { MeProps } from "../types";
 import dynamic from "next/dynamic";
-import { Box, Flex, Text, Button, Icon, Image } from "@chakra-ui/react";
+import { Box, Flex, Text, Button, Icon, Link } from "@chakra-ui/react";
 import { IoMdCreate } from "react-icons/io";
 import ShowPost from "../components/ShowPost";
+import Nextlink from "next/link";
 
 const Navbar = dynamic(import("../components/Navbar"), {
   ssr: typeof window === undefined,
@@ -28,13 +29,15 @@ const App: React.FC<MeProps> = ({ user }) => {
             <Text fontSize="1.4rem" fontWeight="medium" color="grey.500">
               My Feed
             </Text>
-            <Button
-              leftIcon={<Icon as={IoMdCreate} size="md" />}
-              colorScheme="blue"
-              ml="auto"
-            >
-              Create Post
-            </Button>
+            <Nextlink href="/create_post">
+              <Button
+                leftIcon={<Icon as={IoMdCreate} size="md" />}
+                colorScheme="blue"
+                ml="auto"
+              >
+                Create Post
+              </Button>
+            </Nextlink>
           </Flex>
           <Box
             pl="0.5rem"
@@ -44,6 +47,7 @@ const App: React.FC<MeProps> = ({ user }) => {
             h="81vh"
             overflowY="auto"
           >
+            <ShowPost />
             <ShowPost />
           </Box>
         </Box>

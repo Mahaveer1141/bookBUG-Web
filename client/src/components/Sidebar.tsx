@@ -35,7 +35,7 @@ const Sidebar: React.FC<SidebarProps> = ({ page }) => {
           to="/"
           navSize={changeSize ? "small" : "large"}
           icon={FiHome}
-          title="Feed"
+          title="Home"
           active={page === "Home" ? true : false}
         />
         <NavItem
