@@ -15,6 +15,8 @@ import { createConnection } from "typeorm";
 import { MyContext } from "./config/types";
 import { UserResolver } from "./resolvers/UserResolver";
 import cookieParser from "cookie-parser";
+import { PostResolver } from "./resolvers/PostResolver";
+import { LikeResolver } from "./resolvers/LikeResolver";
 require("dotenv").config();
 
 const app = express();
@@ -73,7 +75,7 @@ const main = async () => {
   });
 
   const schema = await buildSchema({
-    resolvers: [HelloResolver, UserResolver],
+    resolvers: [HelloResolver, UserResolver, PostResolver, LikeResolver],
     validate: false,
   });
 

@@ -1,5 +1,13 @@
 import { Field, ID, ObjectType } from "type-graphql";
-import { BaseEntity, Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import {
+  BaseEntity,
+  Column,
+  Entity,
+  OneToMany,
+  PrimaryGeneratedColumn,
+} from "typeorm";
+import { Comments } from "./Comments";
+import { Post } from "./Post";
 
 @ObjectType()
 @Entity()
@@ -23,6 +31,12 @@ export class Users extends BaseEntity {
   @Field()
   @Column()
   photoUrl: string;
+
+  @OneToMany(() => Post, (post) => post.creator)
+  posts: Post[];
+
+  @OneToMany(() => Comments, (comment) => comment.user)
+  comments: Comments[];
 
   @Field()
   @Column({ default: "" })

@@ -1,12 +1,4 @@
-import {
-  Textarea,
-  Button,
-  Flex,
-  Box,
-  Icon,
-  Link,
-  Input,
-} from "@chakra-ui/react";
+import { Textarea, Button, Flex, Box, Icon, Link } from "@chakra-ui/react";
 import { GetServerSideProps } from "next";
 import React from "react";
 import Navbar from "../components/Navbar";
@@ -26,7 +18,7 @@ const CreatePost: React.FC<MeProps> = ({ user }) => {
           <Link href="/">
             <Icon as={IoMdArrowBack} />
           </Link>
-          <Textarea />
+          <Textarea placeholder="Add post" />
           <input type="file" />
           <Button>Post</Button>
         </Box>
