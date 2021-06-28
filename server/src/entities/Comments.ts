@@ -6,6 +6,7 @@ import {
   ManyToOne,
   PrimaryGeneratedColumn,
 } from "typeorm";
+import { Post } from "./Post";
 import { Users } from "./User";
 
 @ObjectType()
@@ -22,6 +23,10 @@ export class Comments extends BaseEntity {
   @Field(() => Users)
   @ManyToOne(() => Users, (user) => user.comments)
   user: Users;
+
+  @Field(() => Post)
+  @ManyToOne(() => Post, (post) => post.comments)
+  post: Post;
 
   @Field()
   @Column()

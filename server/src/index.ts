@@ -17,6 +17,7 @@ import { UserResolver } from "./resolvers/UserResolver";
 import cookieParser from "cookie-parser";
 import { PostResolver } from "./resolvers/PostResolver";
 import { LikeResolver } from "./resolvers/LikeResolver";
+import { CommentResolver } from "./resolvers/CommentResolver";
 require("dotenv").config();
 
 const app = express();
@@ -75,7 +76,13 @@ const main = async () => {
   });
 
   const schema = await buildSchema({
-    resolvers: [HelloResolver, UserResolver, PostResolver, LikeResolver],
+    resolvers: [
+      HelloResolver,
+      UserResolver,
+      PostResolver,
+      LikeResolver,
+      CommentResolver,
+    ],
     validate: false,
   });
 

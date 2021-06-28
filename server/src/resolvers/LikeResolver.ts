@@ -5,10 +5,19 @@ import { Likes } from "../entities/Likes";
 
 @Resolver()
 export class LikeResolver {
-  @Mutation(() => Likes)
+  @Mutation(() => String)
   // TODO save user id from session
-  async createLike(@Arg("postId") postId: number) {
-    const data = await Likes.create({ user_id: 1, postId: postId }).save();
-    return data;
+  async changeLike(@Arg("postId") postId: number) {
+    const like = {
+      user_id: 1,
+      postId: postId,
+    };
+    const data = await Likes.delete(like);
+    console.log(data);
+    if (data.affected === 0) {
+      await Likes.create(like).save();
+      return "Liked";
+    }
+    return "Unliked";
   }
 }

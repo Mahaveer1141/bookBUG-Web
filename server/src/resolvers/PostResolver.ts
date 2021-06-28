@@ -8,22 +8,47 @@ import { getConnection } from "typeorm";
 export class PostResolver {
   @Query(() => [Post])
   async getAllPost() {
-    const data = await getConnection()
-      .getRepository(Post)
-      .createQueryBuilder("p")
-      .innerJoinAndSelect("p.creator", "u", 'u.id = p."creatorId"')
-      .orderBy('"createdAt"', "DESC")
-      .getMany();
+    const data = await getConnection().query(`
+      select p.*, 
+      json_build_object(
+          'id', u.id,
+          'username',u.username,
+          'photoUrl',u."photoUrl",
+          'displayName',u."displayName"
+      ) creator,
+      (select count(user_id) from likes where("postId"=p.id)) as num_likes,
+      (select case 
+          when 1 in (select user_id from likes) then TRUE
+          when 1 not in (select user_id from likes) then FALSE
+          end "isLiked")
+      from post p inner join users u 
+      on u.id = p."creatorId"
+      order by p."createdAt" desc;
+    `);
     return data;
   }
 
   @Query(() => Post)
   async getOnePost(@Arg("id") id: number) {
-    const post = await Post.findOne(
-      { id },
-      { relations: ["creator", "likes"] }
-    );
-    return post;
+    const data: Post[] = await getConnection().query(`
+      select p.*, 
+      json_build_object(
+          'id', u.id,
+          'username',u.username,
+          'photoUrl',u."photoUrl",
+          'displayName',u."displayName"
+      ) creator,
+      (select count(user_id) from likes where("postId"=p.id)) as num_likes,
+      (select case 
+          when 1 in (select user_id from likes) then TRUE
+          when 1 not in (select user_id from likes) then FALSE
+          end "isLiked")
+      from post p inner join users u 
+      on u.id = p."creatorId"
+      where(p.id=1)
+      order by p."createdAt" desc;
+    `);
+    return data[0];
   }
 
   @Mutation(() => Post)

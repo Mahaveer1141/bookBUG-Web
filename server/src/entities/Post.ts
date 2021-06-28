@@ -9,6 +9,7 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from "typeorm";
+import { Comments } from "./Comments";
 import { Likes } from "./Likes";
 import { Users } from "./User";
 
@@ -35,9 +36,18 @@ export class Post extends BaseEntity {
   @ManyToOne(() => Users, (user) => user.posts)
   creator: Users;
 
-  @Field(() => [Likes])
   @OneToMany(() => Likes, (like) => like.post)
   likes: Likes[];
+
+  @Field(() => [Comments])
+  @OneToMany(() => Comments, (comment) => comment.post)
+  comments: Comments[];
+
+  @Field(() => Number)
+  num_likes: number;
+
+  @Field(() => Boolean)
+  isLiked: boolean;
 
   @Field(() => String)
   @CreateDateColumn()
