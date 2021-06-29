@@ -97,7 +97,7 @@ const main = async () => {
 
   const PORT: number = Number(process.env.PORT) || 5000;
   httpServer.listen(PORT, () => {
-    console.log(`Running on port http://localhost:${PORT}`);
+    console.log(`Running on port http://localhost:${PORT}/graphql`);
   });
 };
 

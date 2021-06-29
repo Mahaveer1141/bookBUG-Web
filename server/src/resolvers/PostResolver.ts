@@ -1,5 +1,4 @@
 import { MyContext } from "../config/types";
-// import { Users } from "../entities/User";
 import { Arg, Ctx, Mutation, Query, Resolver } from "type-graphql";
 import { Post } from "../entities/Post";
 import { getConnection } from "typeorm";
@@ -7,7 +6,8 @@ import { getConnection } from "typeorm";
 @Resolver(Post)
 export class PostResolver {
   @Query(() => [Post])
-  async getAllPost() {
+  async getAllPost(@Ctx() { req }: MyContext) {
+    const { userID } = req.session;
     const data = await getConnection().query(`
       select p.*, 
       json_build_object(
@@ -16,20 +16,23 @@ export class PostResolver {
           'photoUrl',u."photoUrl",
           'displayName',u."displayName"
       ) creator,
-      (select count(user_id) from likes where("postId"=p.id)) as num_likes,
+      (select count(user_id) as num_likes
+        from likes where("postId"=p.id)),
       (select case 
-          when 1 in (select user_id from likes) then TRUE
-          when 1 not in (select user_id from likes) then FALSE
-          end "isLiked")
+        when ${userID} in (select user_id from likes where("postId"=p.id)) then TRUE
+        else FALSE
+        end "isLiked")
       from post p inner join users u 
       on u.id = p."creatorId"
+      where (u.id in (select "userId" from follows where("followerId"=${userID})))
       order by p."createdAt" desc;
     `);
     return data;
   }
 
   @Query(() => Post)
-  async getOnePost(@Arg("id") id: number) {
+  async getOnePost(@Arg("id") id: number, @Ctx() { req }: MyContext) {
+    const { userID } = req.session;
     const data: Post[] = await getConnection().query(`
       select p.*, 
       json_build_object(
@@ -38,14 +41,15 @@ export class PostResolver {
           'photoUrl',u."photoUrl",
           'displayName',u."displayName"
       ) creator,
-      (select count(user_id) from likes where("postId"=p.id)) as num_likes,
+      (select count(user_id) as num_likes
+        from likes where("postId"=${id})),
       (select case 
-          when 1 in (select user_id from likes) then TRUE
-          when 1 not in (select user_id from likes) then FALSE
-          end "isLiked")
+        when ${userID} in (select user_id from likes where("postId"=${id})) then TRUE
+        else FALSE
+        end "isLiked")
       from post p inner join users u 
       on u.id = p."creatorId"
-      where(p.id=1)
+      where(p.id=${id})
       order by p."createdAt" desc;
     `);
     return data[0];
@@ -58,7 +62,6 @@ export class PostResolver {
     @Arg("imageUrl") imageUrl: string
   ) {
     const creatorId = req.session.userID;
-    // const creatorId = 1;
     const curPost = {
       creatorId: creatorId,
       text: text,

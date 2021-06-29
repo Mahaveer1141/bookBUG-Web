@@ -1,0 +1,16 @@
+query GetAllPost {
+  getAllPost {
+    id
+    text
+    imageUrl
+    createdAt
+    updatedAt
+    creatorId
+    creator {
+      id
+      username
+    }
+    num_likes
+    isLiked
+  }
+}

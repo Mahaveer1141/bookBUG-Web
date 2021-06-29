@@ -4,9 +4,11 @@ import {
   Column,
   Entity,
   OneToMany,
+  OneToOne,
   PrimaryGeneratedColumn,
 } from "typeorm";
 import { Comments } from "./Comments";
+import { Follows } from "./Follows";
 import { Post } from "./Post";
 
 @ObjectType()

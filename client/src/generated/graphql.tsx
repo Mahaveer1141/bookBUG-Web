@@ -14,10 +14,23 @@ export type Scalars = {
   Float: number;
 };
 
+export type Comments = {
+  __typename?: 'Comments';
+  id: Scalars['ID'];
+  postId: Scalars['Float'];
+  user: Users;
+  post: Post;
+  userId: Scalars['Float'];
+  comment: Scalars['String'];
+};
+
 export type Mutation = {
   __typename?: 'Mutation';
   UpdateUser?: Maybe<UserResponse>;
   Logout: Scalars['Boolean'];
+  createPost: Post;
+  changeLike: Scalars['String'];
+  createComment: Comments;
 };
 
 
@@ -27,10 +40,48 @@ export type MutationUpdateUserArgs = {
   username: Scalars['String'];
 };
 
+
+export type MutationCreatePostArgs = {
+  imageUrl: Scalars['String'];
+  text: Scalars['String'];
+};
+
+
+export type MutationChangeLikeArgs = {
+  postId: Scalars['Float'];
+};
+
+
+export type MutationCreateCommentArgs = {
+  comment: Scalars['String'];
+  postId: Scalars['Float'];
+};
+
+export type Post = {
+  __typename?: 'Post';
+  id: Scalars['ID'];
+  text: Scalars['String'];
+  imageUrl: Scalars['String'];
+  creatorId: Scalars['Float'];
+  creator: Users;
+  comments: Array<Comments>;
+  num_likes: Scalars['Float'];
+  isLiked: Scalars['Boolean'];
+  createdAt: Scalars['String'];
+  updatedAt: Scalars['String'];
+};
+
 export type Query = {
   __typename?: 'Query';
   hello: Scalars['String'];
   Me?: Maybe<Users>;
+  getAllPost: Array<Post>;
+  getOnePost: Post;
+};
+
+
+export type QueryGetOnePostArgs = {
+  id: Scalars['Float'];
 };
 
 export type UserResponse = {
@@ -73,6 +124,21 @@ export type UpdateUserMutation = (
       { __typename?: 'Users' }
       & Pick<Users, 'id' | 'username' | 'displayName' | 'bio'>
     )> }
+  )> }
+);
+
+export type GetAllPostQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetAllPostQuery = (
+  { __typename?: 'Query' }
+  & { getAllPost: Array<(
+    { __typename?: 'Post' }
+    & Pick<Post, 'id' | 'text' | 'imageUrl' | 'createdAt' | 'updatedAt' | 'creatorId' | 'num_likes' | 'isLiked'>
+    & { creator: (
+      { __typename?: 'Users' }
+      & Pick<Users, 'id' | 'username'>
+    ) }
   )> }
 );
 
@@ -159,6 +225,51 @@ export function useUpdateUserMutation(baseOptions?: Apollo.MutationHookOptions<U
 export type UpdateUserMutationHookResult = ReturnType<typeof useUpdateUserMutation>;
 export type UpdateUserMutationResult = Apollo.MutationResult<UpdateUserMutation>;
 export type UpdateUserMutationOptions = Apollo.BaseMutationOptions<UpdateUserMutation, UpdateUserMutationVariables>;
+export const GetAllPostDocument = gql`
+    query GetAllPost {
+  getAllPost {
+    id
+    text
+    imageUrl
+    createdAt
+    updatedAt
+    creatorId
+    creator {
+      id
+      username
+    }
+    num_likes
+    isLiked
+  }
+}
+    `;
+
+/**
+ * __useGetAllPostQuery__
+ *
+ * To run a query within a React component, call `useGetAllPostQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetAllPostQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetAllPostQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGetAllPostQuery(baseOptions?: Apollo.QueryHookOptions<GetAllPostQuery, GetAllPostQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetAllPostQuery, GetAllPostQueryVariables>(GetAllPostDocument, options);
+      }
+export function useGetAllPostLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetAllPostQuery, GetAllPostQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetAllPostQuery, GetAllPostQueryVariables>(GetAllPostDocument, options);
+        }
+export type GetAllPostQueryHookResult = ReturnType<typeof useGetAllPostQuery>;
+export type GetAllPostLazyQueryHookResult = ReturnType<typeof useGetAllPostLazyQuery>;
+export type GetAllPostQueryResult = Apollo.QueryResult<GetAllPostQuery, GetAllPostQueryVariables>;
 export const MeDocument = gql`
     query Me {
   Me {

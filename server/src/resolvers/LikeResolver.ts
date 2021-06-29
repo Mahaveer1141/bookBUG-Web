@@ -1,15 +1,14 @@
 import { MyContext } from "../config/types";
-// import { Users } from "../entities/User";
-import { Arg, Ctx, Mutation, Query, Resolver } from "type-graphql";
+import { Arg, Ctx, Mutation, Resolver } from "type-graphql";
 import { Likes } from "../entities/Likes";
 
 @Resolver()
 export class LikeResolver {
   @Mutation(() => String)
-  // TODO save user id from session
-  async changeLike(@Arg("postId") postId: number) {
+  async changeLike(@Arg("postId") postId: number, @Ctx() { req }: MyContext) {
+    const { userID } = req.session;
     const like = {
-      user_id: 1,
+      user_id: userID,
       postId: postId,
     };
     const data = await Likes.delete(like);

@@ -38,3 +38,5 @@ yarn-error.log*
 /client/.vercel
 
 node_modules
+
+todos

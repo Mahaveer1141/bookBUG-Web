@@ -8,6 +8,7 @@ import { Box, Flex, Text, Button, Icon, Link } from "@chakra-ui/react";
 import { IoMdCreate } from "react-icons/io";
 import ShowPost from "../components/ShowPost";
 import Nextlink from "next/link";
+import { useGetAllPostQuery } from "../generated/graphql";
 
 const Navbar = dynamic(import("../components/Navbar"), {
   ssr: typeof window === undefined,
@@ -18,6 +19,12 @@ const Sidebar = dynamic(import("../components/Sidebar"), {
 });
 
 const App: React.FC<MeProps> = ({ user }) => {
+  const { data, loading } = useGetAllPostQuery();
+  if (loading) {
+    return <div>loading</div>;
+  }
+  console.log(data.getAllPost);
+
   return (
     <>
       <Navbar photoUrl={user.photoUrl} />
