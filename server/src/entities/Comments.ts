@@ -2,6 +2,7 @@ import { Field, ID, ObjectType } from "type-graphql";
 import {
   BaseEntity,
   Column,
+  CreateDateColumn,
   Entity,
   ManyToOne,
   PrimaryGeneratedColumn,
@@ -35,4 +36,8 @@ export class Comments extends BaseEntity {
   @Field()
   @Column()
   comment: string;
+
+  @Field(() => String)
+  @CreateDateColumn()
+  createdAt: Date;
 }

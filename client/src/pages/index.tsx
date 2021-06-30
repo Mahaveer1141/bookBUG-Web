@@ -38,7 +38,7 @@ const App: React.FC<MeProps> = ({ user }) => {
             </Text>
             <Nextlink href="/create_post">
               <Button
-                leftIcon={<Icon as={IoMdCreate} size="md" />}
+                leftIcon={<Icon as={IoMdCreate} />}
                 colorScheme="blue"
                 ml="auto"
               >

@@ -22,6 +22,7 @@ export type Comments = {
   post: Post;
   userId: Scalars['Float'];
   comment: Scalars['String'];
+  createdAt: Scalars['String'];
 };
 
 export type Mutation = {
@@ -61,7 +62,7 @@ export type Post = {
   __typename?: 'Post';
   id: Scalars['ID'];
   text: Scalars['String'];
-  imageUrl: Scalars['String'];
+  imageUrl?: Maybe<Scalars['String']>;
   creatorId: Scalars['Float'];
   creator: Users;
   comments: Array<Comments>;
@@ -99,6 +100,20 @@ export type Users = {
   photoUrl: Scalars['String'];
   bio: Scalars['String'];
 };
+
+export type CreatePostMutationVariables = Exact<{
+  text: Scalars['String'];
+  imageUrl: Scalars['String'];
+}>;
+
+
+export type CreatePostMutation = (
+  { __typename?: 'Mutation' }
+  & { createPost: (
+    { __typename?: 'Post' }
+    & Pick<Post, 'id' | 'text' | 'imageUrl' | 'createdAt' | 'updatedAt' | 'creatorId'>
+  ) }
+);
 
 export type LogoutMutationVariables = Exact<{ [key: string]: never; }>;
 
@@ -154,6 +169,45 @@ export type MeQuery = (
 );
 
 
+export const CreatePostDocument = gql`
+    mutation CreatePost($text: String!, $imageUrl: String!) {
+  createPost(text: $text, imageUrl: $imageUrl) {
+    id
+    text
+    imageUrl
+    createdAt
+    updatedAt
+    creatorId
+  }
+}
+    `;
+export type CreatePostMutationFn = Apollo.MutationFunction<CreatePostMutation, CreatePostMutationVariables>;
+
+/**
+ * __useCreatePostMutation__
+ *
+ * To run a mutation, you first call `useCreatePostMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreatePostMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createPostMutation, { data, loading, error }] = useCreatePostMutation({
+ *   variables: {
+ *      text: // value for 'text'
+ *      imageUrl: // value for 'imageUrl'
+ *   },
+ * });
+ */
+export function useCreatePostMutation(baseOptions?: Apollo.MutationHookOptions<CreatePostMutation, CreatePostMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreatePostMutation, CreatePostMutationVariables>(CreatePostDocument, options);
+      }
+export type CreatePostMutationHookResult = ReturnType<typeof useCreatePostMutation>;
+export type CreatePostMutationResult = Apollo.MutationResult<CreatePostMutation>;
+export type CreatePostMutationOptions = Apollo.BaseMutationOptions<CreatePostMutation, CreatePostMutationVariables>;
 export const LogoutDocument = gql`
     mutation Logout {
   Logout

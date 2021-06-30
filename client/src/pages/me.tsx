@@ -14,7 +14,6 @@ import {
   Alert,
   AlertIcon,
   CloseButton,
-  Heading,
   Stack,
 } from "@chakra-ui/react";
 import { GetServerSideProps } from "next";

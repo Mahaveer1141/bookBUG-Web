@@ -16,4 +16,21 @@ export class CommentResolver {
     }).save();
     return createdComment;
   }
+
+  /*
+  select c.*,
+    json_build_object(
+        'id', u.id,
+        'username',u.username,
+        'displayName',u."displayName"
+    ) creater,
+    (select case 
+      when c."userId"=2 then TRUE
+      else FALSE
+      end "isMe")
+    from comments c inner join users u 
+    on u.id = c."userId"
+    where c."postId"=1
+    order by c."createdAt" desc;
+  */
 }
