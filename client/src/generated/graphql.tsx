@@ -82,7 +82,7 @@ export type Query = {
 
 
 export type QueryGetOnePostArgs = {
-  id: Scalars['Float'];
+  postId: Scalars['Float'];
 };
 
 export type UserResponse = {
@@ -100,6 +100,16 @@ export type Users = {
   photoUrl: Scalars['String'];
   bio: Scalars['String'];
 };
+
+export type ChangeLikeMutationVariables = Exact<{
+  postId: Scalars['Float'];
+}>;
+
+
+export type ChangeLikeMutation = (
+  { __typename?: 'Mutation' }
+  & Pick<Mutation, 'changeLike'>
+);
 
 export type CreatePostMutationVariables = Exact<{
   text: Scalars['String'];
@@ -152,9 +162,26 @@ export type GetAllPostQuery = (
     & Pick<Post, 'id' | 'text' | 'imageUrl' | 'createdAt' | 'updatedAt' | 'creatorId' | 'num_likes' | 'isLiked'>
     & { creator: (
       { __typename?: 'Users' }
-      & Pick<Users, 'id' | 'username'>
+      & Pick<Users, 'id' | 'username' | 'photoUrl'>
     ) }
   )> }
+);
+
+export type GetOnePostQueryVariables = Exact<{
+  postId: Scalars['Float'];
+}>;
+
+
+export type GetOnePostQuery = (
+  { __typename?: 'Query' }
+  & { getOnePost: (
+    { __typename?: 'Post' }
+    & Pick<Post, 'id' | 'text' | 'imageUrl' | 'createdAt' | 'updatedAt' | 'creatorId' | 'num_likes' | 'isLiked'>
+    & { creator: (
+      { __typename?: 'Users' }
+      & Pick<Users, 'id' | 'username' | 'photoUrl'>
+    ) }
+  ) }
 );
 
 export type MeQueryVariables = Exact<{ [key: string]: never; }>;
@@ -169,6 +196,37 @@ export type MeQuery = (
 );
 
 
+export const ChangeLikeDocument = gql`
+    mutation ChangeLike($postId: Float!) {
+  changeLike(postId: $postId)
+}
+    `;
+export type ChangeLikeMutationFn = Apollo.MutationFunction<ChangeLikeMutation, ChangeLikeMutationVariables>;
+
+/**
+ * __useChangeLikeMutation__
+ *
+ * To run a mutation, you first call `useChangeLikeMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useChangeLikeMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [changeLikeMutation, { data, loading, error }] = useChangeLikeMutation({
+ *   variables: {
+ *      postId: // value for 'postId'
+ *   },
+ * });
+ */
+export function useChangeLikeMutation(baseOptions?: Apollo.MutationHookOptions<ChangeLikeMutation, ChangeLikeMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<ChangeLikeMutation, ChangeLikeMutationVariables>(ChangeLikeDocument, options);
+      }
+export type ChangeLikeMutationHookResult = ReturnType<typeof useChangeLikeMutation>;
+export type ChangeLikeMutationResult = Apollo.MutationResult<ChangeLikeMutation>;
+export type ChangeLikeMutationOptions = Apollo.BaseMutationOptions<ChangeLikeMutation, ChangeLikeMutationVariables>;
 export const CreatePostDocument = gql`
     mutation CreatePost($text: String!, $imageUrl: String!) {
   createPost(text: $text, imageUrl: $imageUrl) {
@@ -291,6 +349,7 @@ export const GetAllPostDocument = gql`
     creator {
       id
       username
+      photoUrl
     }
     num_likes
     isLiked
@@ -324,6 +383,53 @@ export function useGetAllPostLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions
 export type GetAllPostQueryHookResult = ReturnType<typeof useGetAllPostQuery>;
 export type GetAllPostLazyQueryHookResult = ReturnType<typeof useGetAllPostLazyQuery>;
 export type GetAllPostQueryResult = Apollo.QueryResult<GetAllPostQuery, GetAllPostQueryVariables>;
+export const GetOnePostDocument = gql`
+    query GetOnePost($postId: Float!) {
+  getOnePost(postId: $postId) {
+    id
+    text
+    imageUrl
+    createdAt
+    updatedAt
+    creatorId
+    creator {
+      id
+      username
+      photoUrl
+    }
+    num_likes
+    isLiked
+  }
+}
+    `;
+
+/**
+ * __useGetOnePostQuery__
+ *
+ * To run a query within a React component, call `useGetOnePostQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetOnePostQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetOnePostQuery({
+ *   variables: {
+ *      postId: // value for 'postId'
+ *   },
+ * });
+ */
+export function useGetOnePostQuery(baseOptions: Apollo.QueryHookOptions<GetOnePostQuery, GetOnePostQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetOnePostQuery, GetOnePostQueryVariables>(GetOnePostDocument, options);
+      }
+export function useGetOnePostLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetOnePostQuery, GetOnePostQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetOnePostQuery, GetOnePostQueryVariables>(GetOnePostDocument, options);
+        }
+export type GetOnePostQueryHookResult = ReturnType<typeof useGetOnePostQuery>;
+export type GetOnePostLazyQueryHookResult = ReturnType<typeof useGetOnePostLazyQuery>;
+export type GetOnePostQueryResult = Apollo.QueryResult<GetOnePostQuery, GetOnePostQueryVariables>;
 export const MeDocument = gql`
     query Me {
   Me {

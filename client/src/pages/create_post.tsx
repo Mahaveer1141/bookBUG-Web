@@ -17,6 +17,7 @@ import { IoMdArrowBack } from "react-icons/io";
 import { Formik } from "formik";
 import { useCreatePostMutation } from "../generated/graphql";
 import dynamic from "next/dynamic";
+import Router from "next/router";
 
 const Navbar = dynamic(import("../components/Navbar"), {
   ssr: typeof window === undefined,
@@ -64,6 +65,7 @@ const CreatePost: React.FC<MeProps> = ({ user }) => {
                 const data = await createPost({ variables: values });
                 console.log(data);
                 actions.setSubmitting(false);
+                Router.replace("/");
                 return;
               }
               const reader = new FileReader();
@@ -73,6 +75,7 @@ const CreatePost: React.FC<MeProps> = ({ user }) => {
                 const data = await createPost({ variables: values });
                 console.log(data);
                 actions.setSubmitting(false);
+                Router.replace("/");
               };
             }}
           >

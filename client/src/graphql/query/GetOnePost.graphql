@@ -1,5 +1,5 @@
-query GetAllPost {
-  getAllPost {
+query GetOnePost($postId: Float!) {
+  getOnePost(postId: $postId) {
     id
     text
     imageUrl

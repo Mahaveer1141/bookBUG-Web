@@ -27,12 +27,12 @@ export class PostResolver {
       where (u.id in (select distinct "userId" from follows where("followerId"=${userID} or "userId"=${userID})))
       order by p."createdAt" desc;
     `);
-    console.log(data);
+    // console.log(data);
     return data;
   }
 
   @Query(() => Post)
-  async getOnePost(@Arg("id") id: number, @Ctx() { req }: MyContext) {
+  async getOnePost(@Arg("postId") postId: number, @Ctx() { req }: MyContext) {
     const { userID } = req.session;
     const data: Post[] = await getConnection().query(`
       select p.*, 
@@ -43,14 +43,14 @@ export class PostResolver {
           'displayName',u."displayName"
       ) creator,
       (select count(user_id) as num_likes
-        from likes where("postId"=${id})),
+        from likes where("postId"=${postId})),
       (select case 
-        when ${userID} in (select user_id from likes where("postId"=${id})) then TRUE
+        when ${userID} in (select user_id from likes where("postId"=${postId})) then TRUE
         else FALSE
         end "isLiked")
       from post p inner join users u 
       on u.id = p."creatorId"
-      where(p.id=${id})
+      where(p.id=${postId})
       order by p."createdAt" desc;
     `);
     return data[0];

@@ -2,13 +2,13 @@ import React from "react";
 import { GetServerSideProps } from "next";
 import { MeQuery } from "../utils/MeQuery";
 import { createClient } from "../utils/apolloClient";
-import { MeProps } from "../types";
+import { MeProps, PostType } from "../types";
 import dynamic from "next/dynamic";
 import { Box, Flex, Text, Button, Icon, Link } from "@chakra-ui/react";
 import { IoMdCreate } from "react-icons/io";
 import ShowPost from "../components/ShowPost";
 import Nextlink from "next/link";
-import { useGetAllPostQuery } from "../generated/graphql";
+import { GetOnePostQuery, useGetAllPostQuery } from "../generated/graphql";
 
 const Navbar = dynamic(import("../components/Navbar"), {
   ssr: typeof window === undefined,
@@ -23,7 +23,8 @@ const App: React.FC<MeProps> = ({ user }) => {
   if (loading) {
     return <div>loading</div>;
   }
-  console.log(data.getAllPost);
+  const val = data.getAllPost[0];
+  console.log(val);
 
   return (
     <>
@@ -54,8 +55,11 @@ const App: React.FC<MeProps> = ({ user }) => {
             h="81vh"
             overflowY="auto"
           >
-            <ShowPost />
-            <ShowPost />
+            {data.getAllPost.map((post, key) => (
+              <div key={key}>
+                <ShowPost post={post} />
+              </div>
+            ))}
           </Box>
         </Box>
       </Flex>

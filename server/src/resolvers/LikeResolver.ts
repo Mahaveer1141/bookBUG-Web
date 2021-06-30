@@ -11,8 +11,8 @@ export class LikeResolver {
       user_id: userID,
       postId: postId,
     };
+    console.log(like);
     const data = await Likes.delete(like);
-    console.log(data);
     if (data.affected === 0) {
       await Likes.create(like).save();
       return "Liked";

@@ -1,0 +1,3 @@
+mutation ChangeLike($postId: Float!) {
+  changeLike(postId: $postId)
+}
