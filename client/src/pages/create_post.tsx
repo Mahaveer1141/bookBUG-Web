@@ -61,6 +61,7 @@ const CreatePost: React.FC<MeProps> = ({ user }) => {
               imageUrl: "",
             }}
             onSubmit={async (values, actions) => {
+              actions.setSubmitting(true);
               if (!selectedFile) {
                 const data = await createPost({ variables: values });
                 console.log(data);
@@ -71,9 +72,10 @@ const CreatePost: React.FC<MeProps> = ({ user }) => {
               const reader = new FileReader();
               reader.readAsDataURL(selectedFile);
               reader.onloadend = async () => {
+                actions.setSubmitting(true);
                 values.imageUrl = reader.result.toString();
+                console.log(values.imageUrl);
                 const data = await createPost({ variables: values });
-                console.log(data);
                 actions.setSubmitting(false);
                 Router.replace("/");
               };

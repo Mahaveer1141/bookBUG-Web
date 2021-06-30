@@ -62,7 +62,7 @@ const main = async () => {
     })
   );
   app.use(cookieParser());
-  app.use(require("body-parser").urlencoded({ extended: true }));
+  app.use(require("body-parser").json({ limit: "50mb" }));
   app.use(passport.initialize());
 
   //  passport config file
