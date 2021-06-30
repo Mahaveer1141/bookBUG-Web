@@ -57,4 +57,19 @@ type Post = {
 
 export interface ShowPostProps {
   post: Post;
+  showCommentIcon: boolean;
+}
+
+export interface CommentType {
+  id: number;
+  creator: UserType;
+  comment: string;
+  postId: number;
+  isMe: boolean;
+}
+
+export interface PostIDProps {
+  user: UserType;
+  post: Post;
+  comments: CommentType[];
 }

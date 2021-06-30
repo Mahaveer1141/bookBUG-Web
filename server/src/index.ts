@@ -72,7 +72,7 @@ const main = async () => {
   app.use("/auth", authRoutes);
 
   app.get("/", (_req, res) => {
-    res.send("hello");
+    res.redirect("/graphql");
   });
 
   const schema = await buildSchema({

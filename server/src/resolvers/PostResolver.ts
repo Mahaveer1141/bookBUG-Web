@@ -39,7 +39,7 @@ export class PostResolver {
       json_build_object(
           'id', u.id,
           'username',u.username,
-          'photoUrl',u."photoUrl",
+          'photoUrl', u."photoUrl",
           'displayName',u."displayName"
       ) creator,
       (select count(user_id) as num_likes

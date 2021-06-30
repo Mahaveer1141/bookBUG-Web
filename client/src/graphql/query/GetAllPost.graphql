@@ -9,6 +9,7 @@ query GetAllPost {
     creator {
       id
       username
+      displayName
       photoUrl
     }
     num_likes

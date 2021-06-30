@@ -8,7 +8,7 @@ import { Box, Flex, Text, Button, Icon, Link } from "@chakra-ui/react";
 import { IoMdCreate } from "react-icons/io";
 import ShowPost from "../components/ShowPost";
 import Nextlink from "next/link";
-import { GetOnePostQuery, useGetAllPostQuery } from "../generated/graphql";
+import { useGetAllPostQuery } from "../generated/graphql";
 
 const Navbar = dynamic(import("../components/Navbar"), {
   ssr: typeof window === undefined,
@@ -55,11 +55,17 @@ const App: React.FC<MeProps> = ({ user }) => {
             h="81vh"
             overflowY="auto"
           >
-            {data.getAllPost.map((post, key) => (
-              <div key={key}>
-                <ShowPost post={post} />
-              </div>
-            ))}
+            {data.getAllPost.length === 0 ? (
+              <Text>
+                No Post to show <Link href="/create_post">Create here</Link>
+              </Text>
+            ) : (
+              data.getAllPost.map((post, key) => (
+                <div key={key}>
+                  <ShowPost showCommentIcon={true} post={post} />
+                </div>
+              ))
+            )}
           </Box>
         </Box>
       </Flex>

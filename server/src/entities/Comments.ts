@@ -23,15 +23,14 @@ export class Comments extends BaseEntity {
 
   @Field(() => Users)
   @ManyToOne(() => Users, (user) => user.comments)
-  user: Users;
+  creator: Users;
 
-  @Field(() => Post)
   @ManyToOne(() => Post, (post) => post.comments)
   post: Post;
 
   @Field()
   @Column()
-  userId: number;
+  creatorId: number;
 
   @Field()
   @Column()
@@ -40,4 +39,7 @@ export class Comments extends BaseEntity {
   @Field(() => String)
   @CreateDateColumn()
   createdAt: Date;
+
+  @Field(() => Boolean)
+  isMe: boolean;
 }

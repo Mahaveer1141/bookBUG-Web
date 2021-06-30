@@ -1,50 +1,16 @@
 import React, { useState } from "react";
-import {
-  Flex,
-  Box,
-  Image,
-  Text,
-  Icon,
-  Textarea,
-  Button,
-} from "@chakra-ui/react";
+import { Flex, Box, Image, Text, Icon } from "@chakra-ui/react";
 import { BiCommentDetail } from "react-icons/bi";
 import { AiOutlineLike, AiFillLike } from "react-icons/ai";
 import { ShowPostProps } from "../types";
 import { useChangeLikeMutation } from "../generated/graphql";
+import { useRouter } from "next/router";
 
-const ShowPost: React.FC<ShowPostProps> = ({ post }) => {
-  const [hidden, setHidden] = useState<boolean>(true);
+const ShowPost: React.FC<ShowPostProps> = ({ post, showCommentIcon }) => {
+  const router = useRouter();
   const [changeLike] = useChangeLikeMutation();
   const [isLiked, setIsLiked] = useState<boolean>(post.isLiked);
   const [numLike, setNumLike] = useState<number>(post.num_likes);
-
-  const CommentBox = () => {
-    return (
-      <Box mt="1rem">
-        <Flex alignItems="center">
-          <Image
-            src="/static/Itachi.jpeg"
-            h="20px"
-            w="20px"
-            borderRadius="100px"
-          />
-          <Text fontSize="0.9rem" fontWeight="medium" ml={3}>
-            Username
-          </Text>
-          <Text fontSize="0.7rem" ml="auto">
-            2m ago
-          </Text>
-        </Flex>
-        <Text mt="0.6rem">
-          Lorem ipsum dolor sit, amet consectetur adipisicing elit. Fugiat,
-          molestias mollitia atque aspernatur quibusdam animi dolores at
-          reiciendis magnam cumque quaerat assumenda autem accusamus tempora
-          consequatur alias ducimus facere ipsum?
-        </Text>
-      </Box>
-    );
-  };
 
   return (
     <Box mt="2rem">
@@ -56,7 +22,7 @@ const ShowPost: React.FC<ShowPostProps> = ({ post }) => {
           borderRadius="100px"
         />
         <Text fontWeight="medium" ml={3}>
-          {post.creator.username}
+          {post.creator.displayName}
         </Text>
         <Text fontSize="0.7rem" ml="auto">
           2m ago
@@ -84,36 +50,17 @@ const ShowPost: React.FC<ShowPostProps> = ({ post }) => {
           as={isLiked ? AiFillLike : AiOutlineLike}
         />
         <Text fontSize="0.8rem">{numLike}</Text>
-        <Icon
-          _hover={{ cursor: "pointer" }}
-          ml="1rem"
-          h="20px"
-          w="20px"
-          onClick={() => setHidden(!hidden)}
-          as={BiCommentDetail}
-        />
-      </Flex>
-      <Box hidden={hidden} mt="1rem" height="300px" pos="sticky">
-        <Flex flexDirection="column">
-          <Textarea
-            ml="2%"
-            w="95%"
-            size="sm"
-            mb="1rem"
-            placeholder="Add comment"
+        <Box hidden={!showCommentIcon}>
+          <Icon
+            _hover={{ cursor: "pointer" }}
+            ml="1rem"
+            h="20px"
+            w="20px"
+            onClick={() => router.push(`/post/${post.id}`)}
+            as={BiCommentDetail}
           />
-          <Button colorScheme="green" size="sm" mr="2%" ml="auto">
-            Post
-          </Button>
-        </Flex>
-        <Box pos="sticky" height="150px" overflowY="auto">
-          <CommentBox />
-          <CommentBox />
-          <CommentBox />
-          <CommentBox />
-          <CommentBox />
         </Box>
-      </Box>
+      </Flex>
     </Box>
   );
 };

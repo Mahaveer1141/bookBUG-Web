@@ -18,11 +18,11 @@ export type Comments = {
   __typename?: 'Comments';
   id: Scalars['ID'];
   postId: Scalars['Float'];
-  user: Users;
-  post: Post;
-  userId: Scalars['Float'];
+  creator: Users;
+  creatorId: Scalars['Float'];
   comment: Scalars['String'];
   createdAt: Scalars['String'];
+  isMe: Scalars['Boolean'];
 };
 
 export type Mutation = {
@@ -78,10 +78,16 @@ export type Query = {
   Me?: Maybe<Users>;
   getAllPost: Array<Post>;
   getOnePost: Post;
+  getComments: Array<Comments>;
 };
 
 
 export type QueryGetOnePostArgs = {
+  postId: Scalars['Float'];
+};
+
+
+export type QueryGetCommentsArgs = {
   postId: Scalars['Float'];
 };
 
@@ -162,7 +168,7 @@ export type GetAllPostQuery = (
     & Pick<Post, 'id' | 'text' | 'imageUrl' | 'createdAt' | 'updatedAt' | 'creatorId' | 'num_likes' | 'isLiked'>
     & { creator: (
       { __typename?: 'Users' }
-      & Pick<Users, 'id' | 'username' | 'photoUrl'>
+      & Pick<Users, 'id' | 'username' | 'displayName' | 'photoUrl'>
     ) }
   )> }
 );
@@ -349,6 +355,7 @@ export const GetAllPostDocument = gql`
     creator {
       id
       username
+      displayName
       photoUrl
     }
     num_likes

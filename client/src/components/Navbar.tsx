@@ -25,7 +25,7 @@ const Navbar: React.FC<NavbarProps> = ({ photoUrl }) => {
         bg="blue.500"
       >
         <Flex justifyContent="center" alignItems="center">
-          <Image w={["30px", "30px", "40px"]} src="static/Frame.svg" />
+          <Image w={["30px", "30px", "40px"]} src="/static/Frame.svg" />
           <Text
             hidden={hideTitle}
             ml="10px"
