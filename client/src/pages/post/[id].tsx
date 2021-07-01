@@ -1,11 +1,27 @@
 import { gql } from "@apollo/client";
-import { Box, Flex, Button, Text, Textarea } from "@chakra-ui/react";
+import { DeleteIcon } from "@chakra-ui/icons";
+import {
+  Box,
+  Flex,
+  Button,
+  Text,
+  Textarea,
+  Image,
+  FormControl,
+  FormLabel,
+  IconButton,
+} from "@chakra-ui/react";
+import { Formik } from "formik";
 import { GetServerSideProps } from "next";
 import dynamic from "next/dynamic";
-import { useRouter } from "next/router";
-import React from "react";
+import { Router, useRouter } from "next/router";
+import React, { useState } from "react";
 import ShowPost from "../../components/ShowPost";
-import { PostIDProps } from "../../types";
+import {
+  useCreateCommentMutation,
+  useDeleteCommentMutation,
+} from "../../generated/graphql";
+import { CommentType, PostIDProps } from "../../types";
 import { createClient } from "../../utils/apolloClient";
 import { MeQuery } from "../../utils/MeQuery";
 
@@ -19,11 +35,12 @@ const Sidebar = dynamic(import("../../components/Sidebar"), {
 
 const App: React.FC<PostIDProps> = ({ user, post, comments }) => {
   const router = useRouter();
-  console.log(post);
-  console.log(comments);
+  const [commentState, setCommentState] = useState(comments);
+  const [createComment] = useCreateCommentMutation();
+  const [deleteComment] = useDeleteCommentMutation();
 
   return (
-    <>
+    <Box>
       <Navbar photoUrl={user.photoUrl} />
       <Flex w="100%">
         <Sidebar page="Home" />
@@ -31,12 +48,88 @@ const App: React.FC<PostIDProps> = ({ user, post, comments }) => {
           <Box pos="sticky" overflowY="auto" pb="10rem" h="100%">
             <ShowPost showCommentIcon={false} post={post} />
             <Text>Comments</Text>
-            <Textarea />
-            <Button>Post</Button>
+            <Formik
+              initialValues={{
+                message: "",
+              }}
+              onSubmit={async (values, actions) => {
+                actions.setSubmitting(true);
+                const { data } = await createComment({
+                  variables: {
+                    postId: Number(post.id),
+                    comment: values.message,
+                  },
+                });
+                const addedComment: CommentType = {
+                  id: Number(data.createComment.id),
+                  comment: values.message,
+                  isMe: true,
+                  creator: user,
+                  postId: Number(post.id),
+                };
+                const newArray = [addedComment, ...commentState];
+                setCommentState(newArray);
+                actions.resetForm();
+                actions.setSubmitting(false);
+              }}
+            >
+              {({ values, handleChange, handleSubmit, isSubmitting }) => (
+                <form onSubmit={handleSubmit}>
+                  <Textarea
+                    required
+                    placeholder="Add Comment"
+                    name="message"
+                    value={values.message}
+                    onChange={handleChange}
+                  />
+                  <Button
+                    disabled={values.message.trim() === ""}
+                    isLoading={isSubmitting}
+                    mt="1rem"
+                    size="sm"
+                    colorScheme="green"
+                    type="submit"
+                  >
+                    Post
+                  </Button>
+                </form>
+              )}
+            </Formik>
+            {commentState.map((comment, key) => (
+              <Box key={key} mt="1rem">
+                <Flex alignItems="center">
+                  <Image
+                    src={comment.creator.photoUrl}
+                    h="25px"
+                    w="25px"
+                    borderRadius="100px"
+                  />
+                  <Text fontSize="0.9rem" fontWeight="medium" ml={3}>
+                    {comment.creator.displayName}
+                  </Text>
+                  <Text fontSize="0.6rem" ml="auto">
+                    2m ago
+                  </Text>
+                  <IconButton
+                    onClick={() => {
+                      deleteComment({ variables: { id: Number(comment.id) } });
+                      const newArray = commentState.filter(
+                        (c) => c.id !== comment.id
+                      );
+                      setCommentState(newArray);
+                    }}
+                    hidden={!comment.isMe}
+                    aria-label=""
+                    icon={<DeleteIcon />}
+                  />
+                </Flex>
+                <Text>{comment.comment}</Text>
+              </Box>
+            ))}
           </Box>
         </Box>
       </Flex>
-    </>
+    </Box>
   );
 };
 
@@ -79,6 +172,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
           creator {
             id
             displayName
+            photoUrl
           }
           comment
           postId

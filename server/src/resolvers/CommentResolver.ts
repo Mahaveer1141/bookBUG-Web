@@ -19,6 +19,12 @@ export class CommentResolver {
     return createdComment;
   }
 
+  @Mutation(() => String)
+  async deleteComment(@Arg("id") id: number) {
+    await Comments.delete({ id });
+    return "deleted";
+  }
+
   @Query(() => [Comments])
   async getComments(@Ctx() { req }: MyContext, @Arg("postId") postId: number) {
     const userId = req.session.userID;
