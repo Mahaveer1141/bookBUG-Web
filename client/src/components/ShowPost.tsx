@@ -5,6 +5,7 @@ import { AiOutlineLike, AiFillLike } from "react-icons/ai";
 import { ShowPostProps } from "../types";
 import { useChangeLikeMutation } from "../generated/graphql";
 import { useRouter } from "next/router";
+import { timeDifference } from "../utils/timeDifference";
 
 const ShowPost: React.FC<ShowPostProps> = ({ post, showCommentIcon }) => {
   const router = useRouter();
@@ -25,7 +26,7 @@ const ShowPost: React.FC<ShowPostProps> = ({ post, showCommentIcon }) => {
           {post.creator.displayName}
         </Text>
         <Text fontSize="0.7rem" ml="auto">
-          2m ago
+          {timeDifference(new Date(), post.updatedAt)}
         </Text>
       </Flex>
       <Text mt="1rem">{post.text}</Text>

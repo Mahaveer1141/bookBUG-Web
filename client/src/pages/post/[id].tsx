@@ -7,14 +7,12 @@ import {
   Text,
   Textarea,
   Image,
-  FormControl,
-  FormLabel,
   IconButton,
 } from "@chakra-ui/react";
 import { Formik } from "formik";
 import { GetServerSideProps } from "next";
 import dynamic from "next/dynamic";
-import { Router, useRouter } from "next/router";
+import { useRouter } from "next/router";
 import React, { useState } from "react";
 import ShowPost from "../../components/ShowPost";
 import {
@@ -24,6 +22,7 @@ import {
 import { CommentType, PostIDProps } from "../../types";
 import { createClient } from "../../utils/apolloClient";
 import { MeQuery } from "../../utils/MeQuery";
+import { timeDifference } from "../../utils/timeDifference";
 
 const Navbar = dynamic(import("../../components/Navbar"), {
   ssr: typeof window === undefined,
@@ -61,11 +60,12 @@ const App: React.FC<PostIDProps> = ({ user, post, comments }) => {
                   },
                 });
                 const addedComment: CommentType = {
-                  id: Number(data.createComment.id),
+                  id: data.createComment.id,
                   comment: values.message,
                   isMe: true,
                   creator: user,
                   postId: Number(post.id),
+                  createdAt: data.createComment.createdAt,
                 };
                 const newArray = [addedComment, ...commentState];
                 setCommentState(newArray);
@@ -108,15 +108,15 @@ const App: React.FC<PostIDProps> = ({ user, post, comments }) => {
                     {comment.creator.displayName}
                   </Text>
                   <Text fontSize="0.6rem" ml="auto">
-                    2m ago
+                    {timeDifference(new Date(), comment.createdAt)}
                   </Text>
                   <IconButton
                     onClick={() => {
-                      deleteComment({ variables: { id: Number(comment.id) } });
                       const newArray = commentState.filter(
                         (c) => c.id !== comment.id
                       );
                       setCommentState(newArray);
+                      deleteComment({ variables: { id: Number(comment.id) } });
                     }}
                     hidden={!comment.isMe}
                     aria-label=""
@@ -156,6 +156,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
             id
             username
             photoUrl
+            displayName
           }
           num_likes
           isLiked
@@ -174,6 +175,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
             displayName
             photoUrl
           }
+          createdAt
           comment
           postId
           isMe

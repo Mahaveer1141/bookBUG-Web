@@ -4,5 +4,6 @@ mutation CreateComment($postId: Float!, $comment: String!) {
     postId
     creatorId
     comment
+    createdAt
   }
 }

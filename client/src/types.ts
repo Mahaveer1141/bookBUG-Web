@@ -1,12 +1,14 @@
 import { Maybe, Scalars } from "./generated/graphql";
 
-export interface UserType {
-  id?: number;
-  displayName?: string;
-  username?: string;
-  bio?: string;
-  photoUrl?: string;
-}
+export type UserType = {
+  __typename?: "Users";
+  id?: Scalars["ID"];
+  displayName?: Scalars["String"];
+  username?: Scalars["String"];
+  email?: Scalars["String"];
+  photoUrl?: Scalars["String"];
+  bio?: Scalars["String"];
+};
 
 export interface NavItemProps {
   icon: any;
@@ -28,27 +30,13 @@ export interface MeProps {
   user: UserType;
 }
 
-export interface PostType {
-  id: number;
-}
-
-type Users = {
-  __typename?: "Users";
-  id?: Scalars["ID"];
-  displayName?: Scalars["String"];
-  username?: Scalars["String"];
-  email?: Scalars["String"];
-  photoUrl?: Scalars["String"];
-  bio?: Scalars["String"];
-};
-
-type Post = {
+export type PostType = {
   __typename?: "Post";
   id: Scalars["ID"];
   text: Scalars["String"];
   imageUrl?: Maybe<Scalars["String"]>;
   creatorId: Scalars["Float"];
-  creator: Users;
+  creator: UserType;
   num_likes: Scalars["Float"];
   isLiked: Scalars["Boolean"];
   createdAt: Scalars["String"];
@@ -56,20 +44,22 @@ type Post = {
 };
 
 export interface ShowPostProps {
-  post: Post;
+  post: PostType;
   showCommentIcon: boolean;
 }
 
-export interface CommentType {
-  id: number;
+export type CommentType = {
+  __typename?: "Comments";
+  id: Scalars["ID"];
+  postId: Scalars["Float"];
   creator: UserType;
-  comment: string;
-  postId: number;
-  isMe: boolean;
-}
-
+  creatorId?: Scalars["Float"];
+  comment: Scalars["String"];
+  createdAt: Scalars["String"];
+  isMe: Scalars["Boolean"];
+};
 export interface PostIDProps {
   user: UserType;
-  post: Post;
+  post: PostType;
   comments: CommentType[];
 }

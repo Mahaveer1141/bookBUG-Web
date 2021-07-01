@@ -133,7 +133,7 @@ export type CreateCommentMutation = (
   { __typename?: 'Mutation' }
   & { createComment: (
     { __typename?: 'Comments' }
-    & Pick<Comments, 'id' | 'postId' | 'creatorId' | 'comment'>
+    & Pick<Comments, 'id' | 'postId' | 'creatorId' | 'comment' | 'createdAt'>
   ) }
 );
 
@@ -270,6 +270,7 @@ export const CreateCommentDocument = gql`
     postId
     creatorId
     comment
+    createdAt
   }
 }
     `;
