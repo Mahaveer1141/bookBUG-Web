@@ -23,8 +23,7 @@ const App: React.FC<MeProps> = ({ user }) => {
   if (loading) {
     return <div>loading</div>;
   }
-  const val = data.getAllPost[0];
-  console.log(val);
+  console.log(data?.getAllPost);
 
   return (
     <>
@@ -55,7 +54,7 @@ const App: React.FC<MeProps> = ({ user }) => {
             h="81vh"
             overflowY="auto"
           >
-            {data.getAllPost.length === 0 ? (
+            {data?.getAllPost === undefined || data?.getAllPost.length === 0 ? (
               <Text>
                 No Post to show <Link href="/create_post">Create here</Link>
               </Text>

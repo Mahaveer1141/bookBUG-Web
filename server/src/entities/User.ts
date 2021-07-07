@@ -7,6 +7,7 @@ import {
   PrimaryGeneratedColumn,
 } from "typeorm";
 import { Comments } from "./Comments";
+import { Follows } from "./Follows";
 import { Post } from "./Post";
 
 @ObjectType()
@@ -34,6 +35,12 @@ export class Users extends BaseEntity {
 
   @OneToMany(() => Post, (post) => post.creator)
   posts: Post[];
+
+  @OneToMany(() => Follows, (follow) => follow.follower)
+  follower: Follows[];
+
+  @OneToMany(() => Follows, (follow) => follow.following)
+  following: Follows[];
 
   @OneToMany(() => Comments, (comment) => comment.creator)
   comments: Comments[];

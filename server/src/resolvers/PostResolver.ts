@@ -8,7 +8,8 @@ export class PostResolver {
   @Query(() => [Post])
   async getAllPost(@Ctx() { req }: MyContext) {
     const { userID } = req.session;
-    const data = await getConnection().query(`
+    if (userID !== undefined) {
+      const data = await getConnection().query(`
       select p.*,
       json_build_object(
           'id', u.id,
@@ -24,11 +25,12 @@ export class PostResolver {
         end "isLiked")
       from post p inner join users u 
       on u.id = p."creatorId"
-      where (u.id in (select distinct "userId" from follows where("followerId"=${userID} or "userId"=${userID})))
+      where (u.id in (select distinct "followingId" from follows where("followerId"=${userID})))
       order by p."createdAt" desc;
-    `);
+      `);
+      return data;
+    }
     // console.log(data);
-    return data;
   }
 
   @Query(() => Post)

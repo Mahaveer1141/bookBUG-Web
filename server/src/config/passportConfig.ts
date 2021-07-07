@@ -1,5 +1,6 @@
 import passport from "passport";
 import { Strategy as GitHubStrategy } from "passport-github2";
+import { Follows } from "../entities/Follows";
 import { Users } from "../entities/User";
 
 interface userInterface {
@@ -53,6 +54,7 @@ const passportConfig = () => {
           });
         }
         user = await Users.create(curUser).save();
+        Follows.create({ followerId: user.id, followingId: user.id }).save();
         cb(null, {
           user,
           accessToken,

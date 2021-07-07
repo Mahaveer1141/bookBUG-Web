@@ -18,6 +18,7 @@ import cookieParser from "cookie-parser";
 import { PostResolver } from "./resolvers/PostResolver";
 import { LikeResolver } from "./resolvers/LikeResolver";
 import { CommentResolver } from "./resolvers/CommentResolver";
+import { FollowResovler } from "./resolvers/FollowResolver";
 require("dotenv").config();
 
 const app = express();
@@ -82,6 +83,7 @@ const main = async () => {
       PostResolver,
       LikeResolver,
       CommentResolver,
+      FollowResovler,
     ],
     validate: false,
   });
