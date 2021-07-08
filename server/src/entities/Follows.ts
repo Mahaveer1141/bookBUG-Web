@@ -24,6 +24,13 @@ export class Follows extends BaseEntity {
 
 /*
 
+  return all the user which are following user 1
+  select "followerId" from follows where("followingId"=1);
+
+
+  return all the user which are followed by user 1
+  select "followingId" from follows where("followerId"=1);
+
   followerId followingId
       1            2    
 

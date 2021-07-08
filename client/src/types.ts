@@ -8,6 +8,7 @@ export type UserType = {
   email?: Scalars["String"];
   photoUrl?: Scalars["String"];
   bio?: Scalars["String"];
+  isFollowed?: Scalars["Boolean"];
 };
 
 export interface NavItemProps {
@@ -62,4 +63,12 @@ export interface PostIDProps {
   user: UserType;
   post: PostType;
   comments: CommentType[];
+}
+
+export interface SearchProps {
+  user: UserType;
+  results: {
+    users: UserType[];
+    books: any;
+  };
 }

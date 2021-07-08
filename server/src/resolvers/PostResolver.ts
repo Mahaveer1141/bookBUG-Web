@@ -10,23 +10,23 @@ export class PostResolver {
     const { userID } = req.session;
     if (userID !== undefined) {
       const data = await getConnection().query(`
-      select p.*,
-      json_build_object(
-          'id', u.id,
-          'username',u.username,
-          'photoUrl',u."photoUrl",
-          'displayName',u."displayName"
-      ) creator,
-      (select count(user_id) as num_likes
-        from likes where("postId"=p.id)),
-      (select case 
-        when ${userID} in (select user_id from likes where("postId"=p.id)) then TRUE
-        else FALSE
-        end "isLiked")
-      from post p inner join users u 
-      on u.id = p."creatorId"
-      where (u.id in (select distinct "followingId" from follows where("followerId"=${userID})))
-      order by p."createdAt" desc;
+        select p.*,
+        json_build_object(
+            'id', u.id,
+            'username',u.username,
+            'photoUrl',u."photoUrl",
+            'displayName',u."displayName"
+        ) creator,
+        (select count(user_id) as num_likes
+          from likes where("postId"=p.id)),
+        (select case 
+          when ${userID} in (select user_id from likes where("postId"=p.id)) then TRUE
+          else FALSE
+          end "isLiked")
+        from post p inner join users u 
+        on u.id = p."creatorId"
+        where (u.id in (select distinct "followingId" from follows where("followerId"=${userID})))
+        order by p."createdAt" desc;
       `);
       return data;
     }

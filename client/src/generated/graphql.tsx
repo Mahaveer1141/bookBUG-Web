@@ -33,6 +33,7 @@ export type Mutation = {
   changeLike: Scalars['String'];
   createComment: Comments;
   deleteComment: Scalars['String'];
+  makeFollow: Scalars['String'];
 };
 
 
@@ -64,6 +65,11 @@ export type MutationDeleteCommentArgs = {
   id: Scalars['Float'];
 };
 
+
+export type MutationMakeFollowArgs = {
+  followerId: Scalars['Float'];
+};
+
 export type Post = {
   __typename?: 'Post';
   id: Scalars['ID'];
@@ -82,9 +88,21 @@ export type Query = {
   __typename?: 'Query';
   hello: Scalars['String'];
   Me?: Maybe<Users>;
+  getSearchUsers?: Maybe<Array<Users>>;
+  getOneUser: Users;
   getAllPost: Array<Post>;
   getOnePost: Post;
   getComments: Array<Comments>;
+};
+
+
+export type QueryGetSearchUsersArgs = {
+  detail: Scalars['String'];
+};
+
+
+export type QueryGetOneUserArgs = {
+  id: Scalars['Float'];
 };
 
 
@@ -111,6 +129,7 @@ export type Users = {
   email: Scalars['String'];
   photoUrl: Scalars['String'];
   bio: Scalars['String'];
+  isFollowed: Scalars['Boolean'];
 };
 
 export type ChangeLikeMutationVariables = Exact<{
@@ -167,6 +186,16 @@ export type LogoutMutationVariables = Exact<{ [key: string]: never; }>;
 export type LogoutMutation = (
   { __typename?: 'Mutation' }
   & Pick<Mutation, 'Logout'>
+);
+
+export type MakeFollowMutationVariables = Exact<{
+  followingId: Scalars['Float'];
+}>;
+
+
+export type MakeFollowMutation = (
+  { __typename?: 'Mutation' }
+  & Pick<Mutation, 'makeFollow'>
 );
 
 export type UpdateUserMutationVariables = Exact<{
@@ -401,6 +430,37 @@ export function useLogoutMutation(baseOptions?: Apollo.MutationHookOptions<Logou
 export type LogoutMutationHookResult = ReturnType<typeof useLogoutMutation>;
 export type LogoutMutationResult = Apollo.MutationResult<LogoutMutation>;
 export type LogoutMutationOptions = Apollo.BaseMutationOptions<LogoutMutation, LogoutMutationVariables>;
+export const MakeFollowDocument = gql`
+    mutation MakeFollow($followingId: Float!) {
+  makeFollow(followerId: $followingId)
+}
+    `;
+export type MakeFollowMutationFn = Apollo.MutationFunction<MakeFollowMutation, MakeFollowMutationVariables>;
+
+/**
+ * __useMakeFollowMutation__
+ *
+ * To run a mutation, you first call `useMakeFollowMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useMakeFollowMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [makeFollowMutation, { data, loading, error }] = useMakeFollowMutation({
+ *   variables: {
+ *      followingId: // value for 'followingId'
+ *   },
+ * });
+ */
+export function useMakeFollowMutation(baseOptions?: Apollo.MutationHookOptions<MakeFollowMutation, MakeFollowMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<MakeFollowMutation, MakeFollowMutationVariables>(MakeFollowDocument, options);
+      }
+export type MakeFollowMutationHookResult = ReturnType<typeof useMakeFollowMutation>;
+export type MakeFollowMutationResult = Apollo.MutationResult<MakeFollowMutation>;
+export type MakeFollowMutationOptions = Apollo.BaseMutationOptions<MakeFollowMutation, MakeFollowMutationVariables>;
 export const UpdateUserDocument = gql`
     mutation UpdateUser($username: String!, $displayName: String!, $bio: String!) {
   UpdateUser(username: $username, displayName: $displayName, bio: $bio) {

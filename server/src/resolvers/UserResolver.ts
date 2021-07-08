@@ -9,6 +9,7 @@ import {
   Query,
   Resolver,
 } from "type-graphql";
+import { getConnection } from "typeorm";
 
 @ObjectType()
 class UserResponse {
@@ -70,5 +71,30 @@ export class UserResolver {
         resolve(true);
       });
     });
+  }
+
+  @Query(() => [Users], { nullable: true })
+  async getSearchUsers(
+    @Arg("detail") deatil: String,
+    @Ctx() { req }: MyContext
+  ) {
+    const { userID } = req.session;
+
+    const data = await getConnection().query(`
+      select *,
+        (select case 
+          when ${userID} in (select "followerId" from follows where("followingId"=id)) then TRUE
+          else FALSE
+          end "isFollowed") 
+        from users 
+        where((username like '%${deatil}%' or "displayName" like '%${deatil}%') 
+        and id != ${userID});
+    `);
+    return data;
+  }
+
+  @Query(() => Users)
+  async getOneUser(@Arg("id") id: number) {
+    return await Users.findOne({ id });
   }
 }

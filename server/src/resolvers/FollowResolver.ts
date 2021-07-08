@@ -7,12 +7,12 @@ export class FollowResovler {
   @Mutation(() => String)
   async makeFollow(
     @Ctx() { req }: MyContext,
-    @Arg("followerId") followerId: number
+    @Arg("followerId") followingId: number
   ) {
     const { userID } = req.session;
     const follows = {
-      followerId: followerId,
-      followingId: userID,
+      followerId: userID,
+      followingId: followingId,
     };
     const data = await Follows.delete(follows);
     if (data.affected === 0) {
@@ -22,3 +22,5 @@ export class FollowResovler {
     return "Unfollowed";
   }
 }
+
+// follower is who follow other user

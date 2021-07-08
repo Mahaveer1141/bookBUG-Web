@@ -9,12 +9,15 @@ import {
   Box,
 } from "@chakra-ui/react";
 import { Image } from "@chakra-ui/react";
-import React from "react";
+import { useRouter } from "next/router";
+import React, { useState } from "react";
 import { useMediaQuery } from "react-responsive";
 import { NavbarProps } from "../types";
 
 const Navbar: React.FC<NavbarProps> = ({ photoUrl }) => {
   const hideTitle = useMediaQuery({ maxWidth: 600 });
+  const [inputValue, setInputValue] = useState("");
+  const router = useRouter();
 
   return (
     <div>
@@ -38,18 +41,29 @@ const Navbar: React.FC<NavbarProps> = ({ photoUrl }) => {
         </Flex>
 
         <Box w={["60%", "50%", "50%"]}>
-          <InputGroup>
-            <InputLeftElement
-              pointerEvents="none"
-              children={<SearchIcon color="gray.300" />}
-            />
-            <Input
-              bg="smokewhite"
-              placeholder="Search user or book here..."
-              w="100%"
-              size="md"
-            />
-          </InputGroup>
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              router.push(`/search/${inputValue}`);
+              setInputValue("");
+            }}
+          >
+            <InputGroup>
+              <InputLeftElement
+                pointerEvents="none"
+                children={<SearchIcon color="gray.300" />}
+              />
+              <Input
+                value={inputValue}
+                isRequired
+                onChange={(e) => setInputValue(e.target.value)}
+                bg="smokewhite"
+                placeholder="Search user or book here..."
+                w="100%"
+                size="md"
+              />
+            </InputGroup>
+          </form>
         </Box>
 
         <Link href="/me">

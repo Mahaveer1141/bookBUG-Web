@@ -1,0 +1,3 @@
+mutation MakeFollow($followingId: Float!) {
+  makeFollow(followerId: $followingId)
+}

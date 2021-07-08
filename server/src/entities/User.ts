@@ -48,4 +48,7 @@ export class Users extends BaseEntity {
   @Field()
   @Column({ default: "" })
   bio: string;
+
+  @Field(() => Boolean)
+  isFollowed: boolean;
 }
