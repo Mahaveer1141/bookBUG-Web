@@ -26,7 +26,14 @@ export class UserResolver {
   async Me(@Ctx() { req }: MyContext): Promise<Users | undefined> {
     const id = req.session.userID;
     if (id === undefined) return id;
-    return await Users.findOne({ id });
+    const data = await getConnection().query(`
+      select *,
+        (select count("followerId") as num_follower from follows where "followingId"=${id}),
+        (select count("followingId") as num_following from follows where "followerId"=${id}),
+        (select count(id) as num_post from post where "creatorId"=${id})
+        from users where(id=${id});
+    `);
+    return data[0];
   }
 
   @Mutation(() => UserResponse, { nullable: true })
@@ -79,7 +86,6 @@ export class UserResolver {
     @Ctx() { req }: MyContext
   ) {
     const { userID } = req.session;
-
     const data = await getConnection().query(`
       select *,
         (select case 

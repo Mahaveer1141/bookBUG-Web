@@ -80,6 +80,7 @@ export type Post = {
   comments: Array<Comments>;
   num_likes: Scalars['Float'];
   isLiked: Scalars['Boolean'];
+  isMe: Scalars['Boolean'];
   createdAt: Scalars['String'];
   updatedAt: Scalars['String'];
 };
@@ -130,6 +131,9 @@ export type Users = {
   photoUrl: Scalars['String'];
   bio: Scalars['String'];
   isFollowed: Scalars['Boolean'];
+  num_follower: Scalars['Float'];
+  num_following: Scalars['Float'];
+  num_post: Scalars['Float'];
 };
 
 export type ChangeLikeMutationVariables = Exact<{
@@ -224,7 +228,7 @@ export type GetAllPostQuery = (
   { __typename?: 'Query' }
   & { getAllPost: Array<(
     { __typename?: 'Post' }
-    & Pick<Post, 'id' | 'text' | 'imageUrl' | 'createdAt' | 'updatedAt' | 'creatorId' | 'num_likes' | 'isLiked'>
+    & Pick<Post, 'id' | 'text' | 'imageUrl' | 'createdAt' | 'updatedAt' | 'creatorId' | 'num_likes' | 'isLiked' | 'isMe'>
     & { creator: (
       { __typename?: 'Users' }
       & Pick<Users, 'id' | 'username' | 'displayName' | 'photoUrl'>
@@ -519,6 +523,7 @@ export const GetAllPostDocument = gql`
     }
     num_likes
     isLiked
+    isMe
   }
 }
     `;

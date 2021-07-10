@@ -49,6 +49,9 @@ export class Post extends BaseEntity {
   @Field(() => Boolean)
   isLiked: boolean;
 
+  @Field(() => Boolean)
+  isMe: boolean;
+
   @Field(() => String)
   @CreateDateColumn()
   createdAt: Date;

@@ -160,6 +160,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
           }
           num_likes
           isLiked
+          isMe
         }
       }
     `,

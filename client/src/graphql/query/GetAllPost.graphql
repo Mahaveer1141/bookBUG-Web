@@ -14,5 +14,6 @@ query GetAllPost {
     }
     num_likes
     isLiked
+    isMe
   }
 }

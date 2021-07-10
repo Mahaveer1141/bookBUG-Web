@@ -2,6 +2,7 @@ import { MyContext } from "../config/types";
 import { Arg, Ctx, Mutation, Query, Resolver } from "type-graphql";
 import { Post } from "../entities/Post";
 import { getConnection } from "typeorm";
+import console from "console";
 
 @Resolver(Post)
 export class PostResolver {
@@ -22,15 +23,19 @@ export class PostResolver {
         (select case 
           when ${userID} in (select user_id from likes where("postId"=p.id)) then TRUE
           else FALSE
-          end "isLiked")
+          end "isLiked"),
+        (select case 
+          when ${userID} = u.id then TRUE
+          else FALSE
+          end "isMe")
         from post p inner join users u 
         on u.id = p."creatorId"
         where (u.id in (select distinct "followingId" from follows where("followerId"=${userID})))
         order by p."createdAt" desc;
       `);
+      console.log(data);
       return data;
     }
-    // console.log(data);
   }
 
   @Query(() => Post)
@@ -49,7 +54,11 @@ export class PostResolver {
       (select case 
         when ${userID} in (select user_id from likes where("postId"=${postId})) then TRUE
         else FALSE
-        end "isLiked")
+        end "isLiked"),
+      (select case 
+        when ${userID} = u.id then TRUE
+        else FALSE
+        end "isMe")
       from post p inner join users u 
       on u.id = p."creatorId"
       where(p.id=${postId})

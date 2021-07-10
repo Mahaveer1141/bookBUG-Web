@@ -1,6 +1,5 @@
 import { Maybe, Scalars } from "./generated/graphql";
-
-export type UserType = {
+export interface UserType {
   __typename?: "Users";
   id?: Scalars["ID"];
   displayName?: Scalars["String"];
@@ -9,7 +8,10 @@ export type UserType = {
   photoUrl?: Scalars["String"];
   bio?: Scalars["String"];
   isFollowed?: Scalars["Boolean"];
-};
+  num_follower?: Scalars["Float"];
+  num_following?: Scalars["Float"];
+  num_post?: Scalars["Float"];
+}
 
 export interface NavItemProps {
   icon: any;
@@ -31,7 +33,7 @@ export interface MeProps {
   user: UserType;
 }
 
-export type PostType = {
+export interface PostType {
   __typename?: "Post";
   id: Scalars["ID"];
   text: Scalars["String"];
@@ -42,7 +44,8 @@ export type PostType = {
   isLiked: Scalars["Boolean"];
   createdAt: Scalars["String"];
   updatedAt: Scalars["String"];
-};
+  isMe: Scalars["Boolean"];
+}
 
 export interface ShowPostProps {
   post: PostType;

@@ -9,6 +9,9 @@ export const MeQuery = gql`
       username
       photoUrl
       bio
+      num_following
+      num_follower
+      num_post
     }
   }
 `;

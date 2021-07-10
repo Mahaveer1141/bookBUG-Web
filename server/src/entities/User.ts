@@ -51,4 +51,13 @@ export class Users extends BaseEntity {
 
   @Field(() => Boolean)
   isFollowed: boolean;
+
+  @Field(() => Number)
+  num_follower: number;
+
+  @Field(() => Number)
+  num_following: number;
+
+  @Field(() => Number)
+  num_post: number;
 }

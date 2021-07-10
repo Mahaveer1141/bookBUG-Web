@@ -71,9 +71,9 @@ const Me: React.FC<MeProps> = ({ user }) => {
                 src={user.photoUrl}
               />
               <Stack mt="1rem" spacing={4}>
-                <Text>200M Followers</Text>
-                <Text>200M Followers</Text>
-                <Text>200M Followers</Text>
+                <Text>{user.num_follower - 1} Followers</Text>
+                <Text>{user.num_following - 1} Following</Text>
+                <Text>{user.num_post} Post</Text>
               </Stack>
 
               <Button
