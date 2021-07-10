@@ -27,18 +27,20 @@ const Navbar: React.FC<NavbarProps> = ({ photoUrl }) => {
         p={3}
         bg="blue.500"
       >
-        <Flex justifyContent="center" alignItems="center">
-          <Image w={["30px", "30px", "40px"]} src="/static/Frame.svg" />
-          <Text
-            hidden={hideTitle}
-            ml="10px"
-            color="white"
-            fontWeight="bold"
-            fontSize="1.5rem"
-          >
-            bookBUG
-          </Text>
-        </Flex>
+        <Link _hover={{ textDecoration: "none" }} href="/">
+          <Flex justifyContent="center" alignItems="center">
+            <Image w={["30px", "30px", "40px"]} src="/static/Frame.svg" />
+            <Text
+              hidden={hideTitle}
+              ml="10px"
+              color="white"
+              fontWeight="bold"
+              fontSize="1.5rem"
+            >
+              bookBUG
+            </Text>
+          </Flex>
+        </Link>
 
         <Box w={["60%", "50%", "50%"]}>
           <form

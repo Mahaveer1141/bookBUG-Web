@@ -16,9 +16,9 @@ const Sidebar: React.FC<SidebarProps> = ({ page }) => {
 
   return (
     <Flex
-      bg="whitesmoke"
+      // bg="whitesmoke"
       pos="sticky"
-      h="89vh"
+      minH={changeSize ? "92vh" : "90vh"}
       boxShadow="0 4px 12px 0 rgba(0, 0, 0, 0.05)"
       w={changeSize ? "3.2rem" : "12rem"}
       flexDir="column"
