@@ -19,4 +19,27 @@ router.get(
   }
 );
 
+router.get(
+  "/google",
+  passport.authenticate("google", {
+    scope: ["email", "profile"],
+    prompt: "select_account",
+    session: false,
+  })
+);
+
+router.get(
+  "/oauth/google",
+  backAuthenticated,
+  passport.authenticate("google", { session: false }),
+  (req: any, res) => {
+    req.session.userID = req.user.user.id;
+    req.session.accessToken = req.user.accessToken;
+    req.session.refreshToken = req.user.refreshToken;
+
+    // Successful authentication, redirect home.
+    res.redirect("http://localhost:3000/me");
+  }
+);
+
 export default router;

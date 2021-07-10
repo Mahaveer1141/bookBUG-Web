@@ -11,7 +11,8 @@ import { MeQuery } from "../utils/MeQuery";
 // Connect with other passionate readers and get book recommendations and suggestions all at one place.
 
 const Login: React.FC = () => {
-  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+  const [googleSubmitting, setGoogleSubmitting] = useState<boolean>(false);
+  const [githubSubmitting, setGithubSubmitting] = useState<boolean>(false);
 
   return (
     <div>
@@ -53,18 +54,39 @@ const Login: React.FC = () => {
           <Text mt="0.4rem" fontSize="1.1rem">
             Login to continue
           </Text>
-          <Button
-            isLoading={isSubmitting}
-            as="a"
-            href="http://localhost:5000/auth/github"
-            mt="1rem"
-            variant="black"
-            color="white"
-            onClick={() => setIsSubmitting(true)}
-          >
-            <Image mr={5} h="22px" w="22px" src="/static/Github.svg" />
-            Log in with Github
-          </Button>
+          <Flex flexDirection="column">
+            <Button
+              w="100%"
+              isLoading={googleSubmitting}
+              as="a"
+              href="http://localhost:5000/auth/google"
+              mt="1rem"
+              bg="#fff"
+              disabled={githubSubmitting}
+              onClick={() => {
+                githubSubmitting ? null : setGoogleSubmitting(true);
+              }}
+            >
+              <Image mr={5} h="22px" w="22px" src="/static/Google.svg" />
+              Log in with Google
+            </Button>
+            <Button
+              w="100%"
+              isLoading={githubSubmitting}
+              as="a"
+              href="http://localhost:5000/auth/github"
+              mt="1rem"
+              variant="black"
+              color="white"
+              disabled={googleSubmitting}
+              onClick={() => {
+                googleSubmitting ? null : setGithubSubmitting(true);
+              }}
+            >
+              <Image mr={5} h="22px" w="22px" src="/static/Github.svg" />
+              Log in with Github
+            </Button>
+          </Flex>
         </Box>
       </Flex>
     </div>

@@ -2,7 +2,7 @@ import React from "react";
 import { GetServerSideProps } from "next";
 import { MeQuery } from "../utils/MeQuery";
 import { createClient } from "../utils/apolloClient";
-import { MeProps, PostType } from "../types";
+import { MeProps } from "../types";
 import dynamic from "next/dynamic";
 import { Box, Flex, Text, Button, Icon, Link } from "@chakra-ui/react";
 import { IoMdCreate } from "react-icons/io";
