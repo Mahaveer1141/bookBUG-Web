@@ -100,7 +100,19 @@ export class UserResolver {
   }
 
   @Query(() => Users)
-  async getOneUser(@Arg("id") id: number) {
-    return await Users.findOne({ id });
+  async getOneUser(@Arg("id") id: number, @Ctx() { req }: MyContext) {
+    const { userID } = req.session;
+    const data = await getConnection().query(`
+      select *,
+        (select count("followerId") as num_follower from follows where "followingId"=${id}),
+        (select count("followingId") as num_following from follows where "followerId"=${id}),
+        (select count(id) as num_post from post where "creatorId"=${id}),
+        (select case 
+          when ${userID} in (select "followerId" from follows where("followingId"=${id})) then TRUE
+          else FALSE
+          end "isFollowed") 
+        from users where(id=${id});
+    `);
+    return data[0];
   }
 }

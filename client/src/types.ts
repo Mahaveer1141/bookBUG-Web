@@ -75,3 +75,8 @@ export interface SearchProps {
     books: any;
   };
 }
+
+export interface ShowUserProps {
+  user: UserType;
+  curUser: UserType;
+}

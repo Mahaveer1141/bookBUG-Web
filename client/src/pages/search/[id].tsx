@@ -1,12 +1,11 @@
 import { gql } from "@apollo/client";
-import { Box, Flex, Text, Image, Button } from "@chakra-ui/react";
+import { Box, Flex, Text } from "@chakra-ui/react";
 import { GetServerSideProps } from "next";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/router";
 import React from "react";
 import { useState } from "react";
 import ShowBasicUser from "../../components/ShowBasicUser";
-import { useMakeFollowMutation } from "../../generated/graphql";
 import { SearchProps } from "../../types";
 import { createClient } from "../../utils/apolloClient";
 import { MeQuery } from "../../utils/MeQuery";
