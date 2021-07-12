@@ -50,3 +50,16 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
 };
 
 export default ShowBook;
+
+/* 
+  item[index].id
+  item[index].volumeInfo.title
+  item[index].volumeInfo.authors.forEach
+  item[index].volumeInfo.publisher
+  item[index].volumeInfo.description
+  item[index].volumeInfo.pageCount
+  item[index].volumeInfo.categories.forEach
+  item[index].volumeInfo.averageRating
+  item[index].volumeInfo.imageLinks.smallThumbnail
+  item[index].volumeInfo.infoLink
+*/

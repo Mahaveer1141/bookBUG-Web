@@ -1,0 +1,3 @@
+query CheckBook($bookId: String!) {
+  checkBook(bookId: $bookId)
+}

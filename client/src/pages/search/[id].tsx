@@ -5,6 +5,7 @@ import dynamic from "next/dynamic";
 import { useRouter } from "next/router";
 import React from "react";
 import { useState } from "react";
+import ShowBasicBook from "../../components/ShowBasicBook";
 import ShowBasicUser from "../../components/ShowBasicUser";
 import { SearchProps } from "../../types";
 import { createClient } from "../../utils/apolloClient";
@@ -21,13 +22,22 @@ const Sidebar = dynamic(import("../../components/Sidebar"), {
 const SearchResult: React.FC<SearchProps> = ({ user, results }) => {
   const router = useRouter();
   const [onUser, setOnUser] = useState<boolean>(true);
+  console.log(results.allBookdId);
 
   return (
     <Box>
       <Navbar photoUrl={user.photoUrl} />
       <Flex w="100%">
         <Sidebar page="Home" />
-        <Box mt="2rem" pos="fixed" w="50%" h="89vh" left="30%">
+        <Box
+          mt="2rem"
+          pos="fixed"
+          w="50%"
+          h="89vh"
+          left="30%"
+          overflowY="auto"
+          pb="10rem"
+        >
           <Text fontSize="1.4rem" fontWeight="medium" color="grey.500">
             Results for "{router.query.id}"
           </Text>
@@ -49,14 +59,26 @@ const SearchResult: React.FC<SearchProps> = ({ user, results }) => {
               ml="2rem"
               onClick={() => setOnUser(false)}
             >
-              Books ({results.books.items.length})
+              Books ({results.books?.items?.length})
             </Text>
           </Flex>
-          {results.users.map((item, key) => (
-            <div key={key}>
-              <ShowBasicUser user={item} />
-            </div>
-          ))}
+          {onUser
+            ? results.users.map((item, key) => (
+                <div key={key}>
+                  <ShowBasicUser user={item} />
+                </div>
+              ))
+            : null}
+          {!onUser
+            ? results.books.items?.map((item, key) => (
+                <div key={key}>
+                  <ShowBasicBook
+                    alreadyAdded={results.allBookdId.includes(item.id)}
+                    item={item}
+                  />
+                </div>
+              ))
+            : null}
         </Box>
       </Flex>
     </Box>
@@ -93,6 +115,14 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
   );
   const books = await response.json();
 
+  const allBooksId = await apolloClient.query({
+    query: gql`
+      query GetBooksId {
+        getBooksId
+      }
+    `,
+  });
+
   if (data?.Me === null) {
     return {
       redirect: {
@@ -107,6 +137,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
       results: {
         users: val.data?.getSearchUsers,
         books: books,
+        allBookdId: allBooksId.data.getBooksId,
       },
     },
   };

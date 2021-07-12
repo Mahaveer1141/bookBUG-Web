@@ -73,6 +73,7 @@ export interface SearchProps {
   results: {
     users: UserType[];
     books: any;
+    allBookdId?: any;
   };
 }
 

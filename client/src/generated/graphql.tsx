@@ -29,6 +29,7 @@ export type Mutation = {
   __typename?: 'Mutation';
   UpdateUser?: Maybe<UserResponse>;
   Logout: Scalars['Boolean'];
+  addBook: Scalars['String'];
   createPost: Post;
   changeLike: Scalars['String'];
   createComment: Comments;
@@ -41,6 +42,11 @@ export type MutationUpdateUserArgs = {
   bio: Scalars['String'];
   displayName: Scalars['String'];
   username: Scalars['String'];
+};
+
+
+export type MutationAddBookArgs = {
+  bookId: Scalars['String'];
 };
 
 
@@ -91,6 +97,7 @@ export type Query = {
   Me?: Maybe<Users>;
   getSearchUsers?: Maybe<Array<Users>>;
   getOneUser: Users;
+  checkBook: Scalars['Boolean'];
   getAllPost: Array<Post>;
   getOnePost: Post;
   getComments: Array<Comments>;
@@ -104,6 +111,11 @@ export type QueryGetSearchUsersArgs = {
 
 export type QueryGetOneUserArgs = {
   id: Scalars['Float'];
+};
+
+
+export type QueryCheckBookArgs = {
+  bookId: Scalars['String'];
 };
 
 
@@ -135,6 +147,16 @@ export type Users = {
   num_following: Scalars['Float'];
   num_post: Scalars['Float'];
 };
+
+export type AddBookMutationVariables = Exact<{
+  bookId: Scalars['String'];
+}>;
+
+
+export type AddBookMutation = (
+  { __typename?: 'Mutation' }
+  & Pick<Mutation, 'addBook'>
+);
 
 export type ChangeLikeMutationVariables = Exact<{
   postId: Scalars['Float'];
@@ -221,6 +243,16 @@ export type UpdateUserMutation = (
   )> }
 );
 
+export type CheckBookQueryVariables = Exact<{
+  bookId: Scalars['String'];
+}>;
+
+
+export type CheckBookQuery = (
+  { __typename?: 'Query' }
+  & Pick<Query, 'checkBook'>
+);
+
 export type GetAllPostQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -265,6 +297,37 @@ export type MeQuery = (
 );
 
 
+export const AddBookDocument = gql`
+    mutation AddBook($bookId: String!) {
+  addBook(bookId: $bookId)
+}
+    `;
+export type AddBookMutationFn = Apollo.MutationFunction<AddBookMutation, AddBookMutationVariables>;
+
+/**
+ * __useAddBookMutation__
+ *
+ * To run a mutation, you first call `useAddBookMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useAddBookMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [addBookMutation, { data, loading, error }] = useAddBookMutation({
+ *   variables: {
+ *      bookId: // value for 'bookId'
+ *   },
+ * });
+ */
+export function useAddBookMutation(baseOptions?: Apollo.MutationHookOptions<AddBookMutation, AddBookMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<AddBookMutation, AddBookMutationVariables>(AddBookDocument, options);
+      }
+export type AddBookMutationHookResult = ReturnType<typeof useAddBookMutation>;
+export type AddBookMutationResult = Apollo.MutationResult<AddBookMutation>;
+export type AddBookMutationOptions = Apollo.BaseMutationOptions<AddBookMutation, AddBookMutationVariables>;
 export const ChangeLikeDocument = gql`
     mutation ChangeLike($postId: Float!) {
   changeLike(postId: $postId)
@@ -506,6 +569,39 @@ export function useUpdateUserMutation(baseOptions?: Apollo.MutationHookOptions<U
 export type UpdateUserMutationHookResult = ReturnType<typeof useUpdateUserMutation>;
 export type UpdateUserMutationResult = Apollo.MutationResult<UpdateUserMutation>;
 export type UpdateUserMutationOptions = Apollo.BaseMutationOptions<UpdateUserMutation, UpdateUserMutationVariables>;
+export const CheckBookDocument = gql`
+    query CheckBook($bookId: String!) {
+  checkBook(bookId: $bookId)
+}
+    `;
+
+/**
+ * __useCheckBookQuery__
+ *
+ * To run a query within a React component, call `useCheckBookQuery` and pass it any options that fit your needs.
+ * When your component renders, `useCheckBookQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useCheckBookQuery({
+ *   variables: {
+ *      bookId: // value for 'bookId'
+ *   },
+ * });
+ */
+export function useCheckBookQuery(baseOptions: Apollo.QueryHookOptions<CheckBookQuery, CheckBookQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<CheckBookQuery, CheckBookQueryVariables>(CheckBookDocument, options);
+      }
+export function useCheckBookLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<CheckBookQuery, CheckBookQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<CheckBookQuery, CheckBookQueryVariables>(CheckBookDocument, options);
+        }
+export type CheckBookQueryHookResult = ReturnType<typeof useCheckBookQuery>;
+export type CheckBookLazyQueryHookResult = ReturnType<typeof useCheckBookLazyQuery>;
+export type CheckBookQueryResult = Apollo.QueryResult<CheckBookQuery, CheckBookQueryVariables>;
 export const GetAllPostDocument = gql`
     query GetAllPost {
   getAllPost {

@@ -1,4 +1,4 @@
-import { MyContext } from "src/config/types";
+import { MyContext } from "../config/types";
 import { Users } from "../entities/User";
 import {
   Arg,
@@ -9,7 +9,8 @@ import {
   Query,
   Resolver,
 } from "type-graphql";
-import { getConnection } from "typeorm";
+import { Any, getConnection } from "typeorm";
+import { Library } from "../entities/Library";
 
 @ObjectType()
 class UserResponse {
@@ -114,5 +115,32 @@ export class UserResolver {
         from users where(id=${id});
     `);
     return data[0];
+  }
+
+  @Mutation(() => String)
+  async addBook(@Arg("bookId") bookId: string, @Ctx() { req }: MyContext) {
+    const { userID } = req.session;
+    const book = {
+      bookId: bookId,
+      userId: userID,
+    };
+    const data = await Library.delete(book);
+    if (data.affected === 0) {
+      await Library.create(book).save();
+      return "Added";
+    }
+    return "Deleted";
+  }
+
+  @Query(() => [String], { nullable: true })
+  async getBooksId(@Ctx() { req }: MyContext) {
+    const data = await getConnection().query(
+      `select "bookId" from library where ("userId" = ${req.session.userID})`
+    );
+    let response: any = [];
+    data.forEach((element: any) => {
+      response.push(element.bookId);
+    });
+    return response;
   }
 }

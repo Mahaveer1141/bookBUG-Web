@@ -15,7 +15,7 @@ const ShowBasicUser: React.FC<MeProps> = ({ user }) => {
           <Text fontWeight="medium" ml={3}>
             {user.displayName}
           </Text>
-          <Text fontSize="1.1rem" color="grey">
+          <Text fontSize="1.1rem" ml={3} color="grey">
             {user.username}
           </Text>
         </Box>
