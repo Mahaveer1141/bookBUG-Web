@@ -77,6 +77,12 @@ export interface SearchProps {
   };
 }
 
+export interface ShowBookProps {
+  user: UserType;
+  book: any;
+  alreadyAdded: boolean;
+}
+
 export interface ShowUserProps {
   user: UserType;
   curUser: UserType;

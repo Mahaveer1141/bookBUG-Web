@@ -9,7 +9,7 @@ import {
   Query,
   Resolver,
 } from "type-graphql";
-import { Any, getConnection } from "typeorm";
+import { getConnection } from "typeorm";
 import { Library } from "../entities/Library";
 
 @ObjectType()
