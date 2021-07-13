@@ -130,7 +130,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const allBooksId = await apolloClient.query({
     query: gql`
       query GetBooksId {
-        getBooksId
+        getBooksId(id: ${data?.Me.id})
       }
     `,
   });

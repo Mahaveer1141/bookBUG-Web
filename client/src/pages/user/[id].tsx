@@ -3,6 +3,7 @@ import { Flex, Image, Text, Box, Button, Stack } from "@chakra-ui/react";
 import { GetServerSideProps } from "next";
 import dynamic from "next/dynamic";
 import React, { useState } from "react";
+import ShowLibrary from "../../components/ShowLibrary";
 import { useMakeFollowMutation } from "../../generated/graphql";
 import { ShowUserProps } from "../../types";
 import { createClient } from "../../utils/apolloClient";
@@ -16,7 +17,7 @@ const Sidebar = dynamic(import("../../components/Sidebar"), {
   ssr: typeof window === undefined,
 });
 
-const ShowUser: React.FC<ShowUserProps> = ({ user, curUser }) => {
+const ShowUser: React.FC<ShowUserProps> = ({ user, curUser, books }) => {
   const [makeFollow] = useMakeFollowMutation();
   const [isFollowed, setFollowed] = useState<boolean>(curUser.isFollowed);
 
@@ -25,7 +26,15 @@ const ShowUser: React.FC<ShowUserProps> = ({ user, curUser }) => {
       <Navbar photoUrl={user.photoUrl} />
       <Flex>
         <Sidebar page="Home" />
-        <Box mt="2rem" pos="fixed" w="50%" h="89vh" left="30%">
+        <Box
+          mt="2rem"
+          pos="fixed"
+          w="50%"
+          h="89vh"
+          left="30%"
+          overflowY="auto"
+          pb="10rem"
+        >
           <Flex>
             <Image
               src={curUser.photoUrl}
@@ -86,16 +95,9 @@ const ShowUser: React.FC<ShowUserProps> = ({ user, curUser }) => {
           <Box mt="2rem">
             <Flex>
               <Text fontSize="1rem" fontWeight="semibold">
-                Collection(10)
+                Collection({books.length})
               </Text>
-              <Text fontSize="0.8rem" color="blue.400" ml="auto">
-                See all
-              </Text>
-            </Flex>
-            <Flex mt="1rem" justifyContent="space-between">
-              <Image src="/static/DefaultBook.svg" h="120px" w="100px" />
-              <Image src="/static/DefaultBook.svg" h="120px" w="100px" />
-              <Image src="/static/DefaultBook.svg" h="120px" w="100px" />
+              <ShowLibrary books={books} />
             </Flex>
           </Box>
         </Box>
@@ -130,6 +132,25 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
     `,
   });
 
+  const allBooksId = await apolloClient.query({
+    query: gql`
+      query GetBooksId {
+        getBooksId(id: ${id})
+      }
+    `,
+  });
+
+  const books: any = [];
+
+  for (let i = 0; i < allBooksId.data.getBooksId.length; i++) {
+    const id = allBooksId.data.getBooksId[i];
+    const response = await fetch(
+      `https://www.googleapis.com/books/v1/volumes/${id}`
+    );
+    const book = await response.json();
+    books.push(book);
+  }
+
   if (data?.Me === null) {
     return {
       redirect: {
@@ -142,6 +163,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
     props: {
       user: data?.Me,
       curUser: curUser?.data?.getOneUser,
+      books: books,
     },
   };
 };

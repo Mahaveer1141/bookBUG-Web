@@ -53,7 +53,7 @@ const Sidebar: React.FC<SidebarProps> = ({ page }) => {
           active={page === "Messages" ? true : false}
         />
         <NavItem
-          to="/"
+          to="/library"
           navSize={changeSize ? "small" : "large"}
           icon={FiBook}
           title="My Library"

@@ -86,4 +86,10 @@ export interface ShowBookProps {
 export interface ShowUserProps {
   user: UserType;
   curUser: UserType;
+  books: any;
+}
+
+export interface LibraryProps {
+  user: UserType;
+  books: any;
 }

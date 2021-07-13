@@ -133,9 +133,9 @@ export class UserResolver {
   }
 
   @Query(() => [String], { nullable: true })
-  async getBooksId(@Ctx() { req }: MyContext) {
+  async getBooksId(@Arg("id") id: number) {
     const data = await getConnection().query(
-      `select "bookId" from library where ("userId" = ${req.session.userID})`
+      `select "bookId" from library where ("userId" = ${id})`
     );
     let response: any = [];
     data.forEach((element: any) => {
