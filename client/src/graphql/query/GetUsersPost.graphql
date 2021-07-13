@@ -1,0 +1,17 @@
+query GetUsersPost($userId: Float!) {
+  getUsersPost(userId: $userId) {
+    id
+    text
+    imageUrl
+    createdAt
+    updatedAt
+    creatorId
+    creator {
+      id
+      username
+      photoUrl
+    }
+    num_likes
+    isLiked
+  }
+}

@@ -15,6 +15,7 @@ import {
   AlertIcon,
   CloseButton,
   Stack,
+  Link,
 } from "@chakra-ui/react";
 import { GetServerSideProps } from "next";
 import { MeQuery } from "../utils/MeQuery";
@@ -71,9 +72,15 @@ const Me: React.FC<MeProps> = ({ user }) => {
                 src={user.photoUrl}
               />
               <Stack mt="1rem" spacing={4}>
-                <Text>{user.num_follower - 1} Followers</Text>
-                <Text>{user.num_following - 1} Following</Text>
-                <Text>{user.num_post} Post</Text>
+                <Link href={"/followers/" + user.id}>
+                  <Text>{user.num_follower - 1} Followers</Text>
+                </Link>
+                <Link href={"/following/" + user.id}>
+                  <Text>{user.num_following - 1} Following</Text>
+                </Link>
+                <Link href={"/user_post/" + user.id}>
+                  <Text>{user.num_post} Post</Text>
+                </Link>
               </Stack>
 
               <Button

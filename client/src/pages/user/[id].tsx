@@ -1,5 +1,5 @@
 import { gql } from "@apollo/client";
-import { Flex, Image, Text, Box, Button, Stack } from "@chakra-ui/react";
+import { Flex, Image, Text, Box, Button, Stack, Link } from "@chakra-ui/react";
 import { GetServerSideProps } from "next";
 import dynamic from "next/dynamic";
 import React, { useState } from "react";
@@ -78,12 +78,14 @@ const ShowUser: React.FC<ShowUserProps> = ({ user, curUser, books }) => {
                 </Text>{" "}
                 Followings
               </Text>
-              <Text>
-                <Text as="span" fontWeight="semibold" fontSize="1.2rem">
-                  {curUser.num_post}
-                </Text>{" "}
-                Posts
-              </Text>
+              <Link href={"/user_post/" + curUser.id}>
+                <Text>
+                  <Text as="span" fontWeight="semibold" fontSize="1.2rem">
+                    {curUser.num_post}
+                  </Text>{" "}
+                  Posts
+                </Text>
+              </Link>
             </Flex>
             <Text mt="1rem" fontSize="1.1rem" fontWeight="semibold">
               Bio

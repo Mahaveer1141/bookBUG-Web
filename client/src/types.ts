@@ -44,7 +44,7 @@ export interface PostType {
   isLiked: Scalars["Boolean"];
   createdAt: Scalars["String"];
   updatedAt: Scalars["String"];
-  isMe: Scalars["Boolean"];
+  isMe?: Scalars["Boolean"];
 }
 
 export interface ShowPostProps {

@@ -97,9 +97,10 @@ export type Query = {
   Me?: Maybe<Users>;
   getSearchUsers?: Maybe<Array<Users>>;
   getOneUser: Users;
-  checkBook: Scalars['Boolean'];
+  getBooksId?: Maybe<Array<Scalars['String']>>;
   getAllPost: Array<Post>;
   getOnePost: Post;
+  getUsersPost: Array<Post>;
   getComments: Array<Comments>;
 };
 
@@ -114,13 +115,18 @@ export type QueryGetOneUserArgs = {
 };
 
 
-export type QueryCheckBookArgs = {
-  bookId: Scalars['String'];
+export type QueryGetBooksIdArgs = {
+  id: Scalars['Float'];
 };
 
 
 export type QueryGetOnePostArgs = {
   postId: Scalars['Float'];
+};
+
+
+export type QueryGetUsersPostArgs = {
+  userId: Scalars['Float'];
 };
 
 
@@ -243,16 +249,6 @@ export type UpdateUserMutation = (
   )> }
 );
 
-export type CheckBookQueryVariables = Exact<{
-  bookId: Scalars['String'];
-}>;
-
-
-export type CheckBookQuery = (
-  { __typename?: 'Query' }
-  & Pick<Query, 'checkBook'>
-);
-
 export type GetAllPostQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -283,6 +279,23 @@ export type GetOnePostQuery = (
       & Pick<Users, 'id' | 'username' | 'photoUrl'>
     ) }
   ) }
+);
+
+export type GetUsersPostQueryVariables = Exact<{
+  userId: Scalars['Float'];
+}>;
+
+
+export type GetUsersPostQuery = (
+  { __typename?: 'Query' }
+  & { getUsersPost: Array<(
+    { __typename?: 'Post' }
+    & Pick<Post, 'id' | 'text' | 'imageUrl' | 'createdAt' | 'updatedAt' | 'creatorId' | 'num_likes' | 'isLiked'>
+    & { creator: (
+      { __typename?: 'Users' }
+      & Pick<Users, 'id' | 'username' | 'photoUrl'>
+    ) }
+  )> }
 );
 
 export type MeQueryVariables = Exact<{ [key: string]: never; }>;
@@ -569,39 +582,6 @@ export function useUpdateUserMutation(baseOptions?: Apollo.MutationHookOptions<U
 export type UpdateUserMutationHookResult = ReturnType<typeof useUpdateUserMutation>;
 export type UpdateUserMutationResult = Apollo.MutationResult<UpdateUserMutation>;
 export type UpdateUserMutationOptions = Apollo.BaseMutationOptions<UpdateUserMutation, UpdateUserMutationVariables>;
-export const CheckBookDocument = gql`
-    query CheckBook($bookId: String!) {
-  checkBook(bookId: $bookId)
-}
-    `;
-
-/**
- * __useCheckBookQuery__
- *
- * To run a query within a React component, call `useCheckBookQuery` and pass it any options that fit your needs.
- * When your component renders, `useCheckBookQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useCheckBookQuery({
- *   variables: {
- *      bookId: // value for 'bookId'
- *   },
- * });
- */
-export function useCheckBookQuery(baseOptions: Apollo.QueryHookOptions<CheckBookQuery, CheckBookQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<CheckBookQuery, CheckBookQueryVariables>(CheckBookDocument, options);
-      }
-export function useCheckBookLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<CheckBookQuery, CheckBookQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<CheckBookQuery, CheckBookQueryVariables>(CheckBookDocument, options);
-        }
-export type CheckBookQueryHookResult = ReturnType<typeof useCheckBookQuery>;
-export type CheckBookLazyQueryHookResult = ReturnType<typeof useCheckBookLazyQuery>;
-export type CheckBookQueryResult = Apollo.QueryResult<CheckBookQuery, CheckBookQueryVariables>;
 export const GetAllPostDocument = gql`
     query GetAllPost {
   getAllPost {
@@ -697,6 +677,53 @@ export function useGetOnePostLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions
 export type GetOnePostQueryHookResult = ReturnType<typeof useGetOnePostQuery>;
 export type GetOnePostLazyQueryHookResult = ReturnType<typeof useGetOnePostLazyQuery>;
 export type GetOnePostQueryResult = Apollo.QueryResult<GetOnePostQuery, GetOnePostQueryVariables>;
+export const GetUsersPostDocument = gql`
+    query GetUsersPost($userId: Float!) {
+  getUsersPost(userId: $userId) {
+    id
+    text
+    imageUrl
+    createdAt
+    updatedAt
+    creatorId
+    creator {
+      id
+      username
+      photoUrl
+    }
+    num_likes
+    isLiked
+  }
+}
+    `;
+
+/**
+ * __useGetUsersPostQuery__
+ *
+ * To run a query within a React component, call `useGetUsersPostQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetUsersPostQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetUsersPostQuery({
+ *   variables: {
+ *      userId: // value for 'userId'
+ *   },
+ * });
+ */
+export function useGetUsersPostQuery(baseOptions: Apollo.QueryHookOptions<GetUsersPostQuery, GetUsersPostQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetUsersPostQuery, GetUsersPostQueryVariables>(GetUsersPostDocument, options);
+      }
+export function useGetUsersPostLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetUsersPostQuery, GetUsersPostQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetUsersPostQuery, GetUsersPostQueryVariables>(GetUsersPostDocument, options);
+        }
+export type GetUsersPostQueryHookResult = ReturnType<typeof useGetUsersPostQuery>;
+export type GetUsersPostLazyQueryHookResult = ReturnType<typeof useGetUsersPostLazyQuery>;
+export type GetUsersPostQueryResult = Apollo.QueryResult<GetUsersPostQuery, GetUsersPostQueryVariables>;
 export const MeDocument = gql`
     query Me {
   Me {

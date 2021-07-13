@@ -1,5 +1,5 @@
 import { gql } from "@apollo/client";
-import { Flex, Box, Text, Image, Grid, GridItem } from "@chakra-ui/react";
+import { Flex, Box, Text } from "@chakra-ui/react";
 import { GetServerSideProps } from "next";
 import dynamic from "next/dynamic";
 import React from "react";

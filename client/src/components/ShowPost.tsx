@@ -16,15 +16,17 @@ const ShowPost: React.FC<ShowPostProps> = ({ post, showCommentIcon }) => {
   return (
     <Box mt="2rem">
       <Flex alignItems="center">
-        <Image
-          src={post.creator.photoUrl}
-          h="30px"
-          w="30px"
-          borderRadius="100px"
-        />
-        <Text fontWeight="medium" ml={3}>
-          {post.creator.displayName}
-        </Text>
+        <Flex as="a" href={post.isMe ? "/me" : "/user/" + post.creatorId}>
+          <Image
+            src={post.creator.photoUrl}
+            h="30px"
+            w="30px"
+            borderRadius="100px"
+          />
+          <Text fontWeight="medium" ml={3}>
+            {post.creator.displayName}
+          </Text>
+        </Flex>
         <Text fontSize="0.7rem" ml="auto">
           {timeDifference(new Date(), post.updatedAt)}
         </Text>
