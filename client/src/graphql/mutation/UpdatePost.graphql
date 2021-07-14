@@ -1,0 +1,3 @@
+mutation updatePost($postId: Float!, $text: String!, $imageUrl: String!) {
+  updatePost(postId: $postId, text: $text, imageUrl: $imageUrl)
+}

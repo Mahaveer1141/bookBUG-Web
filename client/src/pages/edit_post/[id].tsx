@@ -1,43 +1,47 @@
+import { gql } from "@apollo/client";
+import { DeleteIcon } from "@chakra-ui/icons";
 import {
-  Textarea,
-  Button,
-  Flex,
   Box,
-  Icon,
-  Link,
+  Flex,
+  Button,
+  Textarea,
   FormControl,
   FormLabel,
+  IconButton,
 } from "@chakra-ui/react";
-import { GetServerSideProps } from "next";
-import React, { useState } from "react";
-import { MeProps } from "../types";
-import { createClient } from "../utils/apolloClient";
-import { MeQuery } from "../utils/MeQuery";
-import { IoMdArrowBack } from "react-icons/io";
 import { Formik } from "formik";
-import { useCreatePostMutation } from "../generated/graphql";
+import { GetServerSideProps } from "next";
 import dynamic from "next/dynamic";
-import Router from "next/router";
+import { useRouter } from "next/router";
+import React, { useState } from "react";
+import {
+  useDeletePostMutation,
+  useUpdatePostMutation,
+} from "../../generated/graphql";
+import { EditPostProps } from "../../types";
+import { createClient } from "../../utils/apolloClient";
+import { MeQuery } from "../../utils/MeQuery";
 
-const Navbar = dynamic(import("../components/Navbar"), {
+const Navbar = dynamic(import("../../components/Navbar"), {
   ssr: typeof window === undefined,
 });
 
-const Sidebar = dynamic(import("../components/Sidebar"), {
+const Sidebar = dynamic(import("../../components/Sidebar"), {
   ssr: typeof window === undefined,
 });
 
-const CreatePost: React.FC<MeProps> = ({ user }) => {
+const App: React.FC<EditPostProps> = ({ user, post }) => {
+  const router = useRouter();
   const [fileInputState, setFileInputState] = useState("");
   const [selectedFile, setSelectedFile] = useState();
+  const [updatePost] = useUpdatePostMutation();
+  const [deletePost] = useDeletePostMutation();
 
   const handleFileInputChange = (e) => {
     const file = e.target.files[0];
     setSelectedFile(file);
     setFileInputState(e.target.value);
   };
-
-  const [createPost] = useCreatePostMutation();
 
   return (
     <>
@@ -50,23 +54,24 @@ const CreatePost: React.FC<MeProps> = ({ user }) => {
           left={["20%", "28%", "30%"]}
           mt="1.5rem"
         >
-          <Link href="/">
-            <Icon as={IoMdArrowBack} />
-          </Link>
-
           <Formik
             enableReinitialize={false}
             initialValues={{
-              text: "",
-              imageUrl: "",
+              text: post.text,
+              imageUrl: post.imageUrl,
             }}
             onSubmit={async (values, actions) => {
               actions.setSubmitting(true);
               if (!selectedFile) {
-                const data = await createPost({ variables: values });
-                console.log(data);
+                updatePost({
+                  variables: {
+                    postId: Number(post.id),
+                    text: values.text,
+                    imageUrl: values.imageUrl,
+                  },
+                });
                 actions.setSubmitting(false);
-                Router.replace("/");
+                router.replace("/");
                 return;
               }
               const reader = new FileReader();
@@ -74,10 +79,15 @@ const CreatePost: React.FC<MeProps> = ({ user }) => {
               reader.onloadend = async () => {
                 actions.setSubmitting(true);
                 values.imageUrl = reader.result.toString();
-                console.log(values.imageUrl);
-                await createPost({ variables: values });
+                updatePost({
+                  variables: {
+                    postId: Number(post.id),
+                    text: values.text,
+                    imageUrl: values.imageUrl,
+                  },
+                });
                 actions.setSubmitting(false);
-                Router.replace("/");
+                router.replace("/");
               };
             }}
           >
@@ -85,6 +95,7 @@ const CreatePost: React.FC<MeProps> = ({ user }) => {
               <form onSubmit={handleSubmit}>
                 <FormControl isRequired={true} mt="1rem" id="text">
                   <FormLabel>Text</FormLabel>
+
                   <Textarea
                     required
                     placeholder="Text"
@@ -104,15 +115,25 @@ const CreatePost: React.FC<MeProps> = ({ user }) => {
                     type="file"
                   />
                 </FormControl>
-
-                <Button
-                  isLoading={isSubmitting}
-                  mt="1rem"
-                  colorScheme="blue"
-                  type="submit"
-                >
-                  Post
-                </Button>
+                <Flex mt="1rem">
+                  <Button
+                    isLoading={isSubmitting}
+                    colorScheme="blue"
+                    type="submit"
+                  >
+                    Post
+                  </Button>
+                  <IconButton
+                    onClick={() => {
+                      deletePost({ variables: { postId: Number(post.id) } });
+                      router.replace("/");
+                    }}
+                    colorScheme="red"
+                    ml="1rem"
+                    aria-label=""
+                    icon={<DeleteIcon />}
+                  />
+                </Flex>
               </form>
             )}
           </Formik>
@@ -125,8 +146,34 @@ const CreatePost: React.FC<MeProps> = ({ user }) => {
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const apolloClient = createClient(ctx as any);
 
+  const id = ctx.query.id;
+
   const { data } = await apolloClient.query({
     query: MeQuery,
+  });
+
+  const onePost = await apolloClient.query({
+    query: gql`
+      query GetOnePost {
+        getOnePost(postId: ${id}) {
+          id
+          text
+          imageUrl
+          createdAt
+          updatedAt
+          creatorId
+          creator {
+            id
+            username
+            photoUrl
+            displayName
+          }
+          num_likes
+          isLiked
+          isMe
+        }
+      }
+    `,
   });
 
   if (data?.Me === null) {
@@ -137,11 +184,20 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
       },
     };
   }
+  if (!onePost.data.getOnePost.isMe) {
+    return {
+      redirect: {
+        destination: "/",
+        permanent: false,
+      },
+    };
+  }
   return {
     props: {
       user: data?.Me,
+      post: onePost.data.getOnePost,
     },
   };
 };
 
-export default CreatePost;
+export default App;

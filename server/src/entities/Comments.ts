@@ -25,7 +25,7 @@ export class Comments extends BaseEntity {
   @ManyToOne(() => Users, (user) => user.comments)
   creator: Users;
 
-  @ManyToOne(() => Post, (post) => post.comments)
+  @ManyToOne(() => Post, (post) => post.comments, { onDelete: "CASCADE" })
   post: Post;
 
   @Field()

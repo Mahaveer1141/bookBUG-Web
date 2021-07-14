@@ -1,11 +1,12 @@
 import React, { useState } from "react";
-import { Flex, Box, Image, Text, Icon } from "@chakra-ui/react";
+import { Flex, Box, Image, Text, Icon, IconButton } from "@chakra-ui/react";
 import { BiCommentDetail } from "react-icons/bi";
 import { AiOutlineLike, AiFillLike } from "react-icons/ai";
 import { ShowPostProps } from "../types";
 import { useChangeLikeMutation } from "../generated/graphql";
 import { useRouter } from "next/router";
 import { timeDifference } from "../utils/timeDifference";
+import { EditIcon } from "@chakra-ui/icons";
 
 const ShowPost: React.FC<ShowPostProps> = ({ post, showCommentIcon }) => {
   const router = useRouter();
@@ -63,6 +64,11 @@ const ShowPost: React.FC<ShowPostProps> = ({ post, showCommentIcon }) => {
             as={BiCommentDetail}
           />
         </Box>
+        {post.isMe ? (
+          <Box ml="auto" as="a" href={"/edit_post/" + post.id}>
+            <IconButton aria-label="" icon={<EditIcon />} />
+          </Box>
+        ) : null}
       </Flex>
     </Box>
   );

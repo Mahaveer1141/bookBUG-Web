@@ -94,6 +94,29 @@ export class PostResolver {
     return data;
   }
 
+  @Mutation(() => Boolean)
+  async updatePost(
+    @Arg("postId") postId: number,
+    @Arg("text") text: string,
+    @Arg("imageUrl") imageUrl: string
+  ) {
+    await getConnection().query(`
+      update post
+      set "imageUrl" = '${imageUrl}', text = '${text}'
+      where id = ${postId}
+    `);
+    return true;
+  }
+
+  @Mutation(() => String)
+  async deletePost(@Arg("postId") postId: number) {
+    await getConnection().query(`
+      delete from post
+      where id = ${postId}
+    `);
+    return true;
+  }
+
   @Mutation(() => Post)
   async createPost(
     @Ctx() { req }: MyContext,

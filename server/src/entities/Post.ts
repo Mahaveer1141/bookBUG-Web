@@ -36,11 +36,11 @@ export class Post extends BaseEntity {
   @ManyToOne(() => Users, (user) => user.posts)
   creator: Users;
 
-  @OneToMany(() => Likes, (like) => like.post)
+  @OneToMany(() => Likes, (like) => like.post, { onDelete: "CASCADE" })
   likes: Likes[];
 
   @Field(() => [Comments])
-  @OneToMany(() => Comments, (comment) => comment.post)
+  @OneToMany(() => Comments, (comment) => comment.post, { onDelete: "CASCADE" })
   comments: Comments[];
 
   @Field(() => Number)

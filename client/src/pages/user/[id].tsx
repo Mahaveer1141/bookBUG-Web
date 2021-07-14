@@ -66,18 +66,22 @@ const ShowUser: React.FC<ShowUserProps> = ({ user, curUser, books }) => {
               About
             </Text>
             <Flex mt="1rem" justifyContent="space-between">
-              <Text>
-                <Text as="span" fontWeight="semibold" fontSize="1.2rem">
-                  {curUser.num_follower - 1}
-                </Text>{" "}
-                Followers
-              </Text>
-              <Text>
-                <Text as="span" fontWeight="semibold" fontSize="1.2rem">
-                  {curUser.num_following - 1}
-                </Text>{" "}
-                Followings
-              </Text>
+              <Link href={"/followers/" + curUser.id}>
+                <Text>
+                  <Text as="span" fontWeight="semibold" fontSize="1.2rem">
+                    {curUser.num_follower - 1}
+                  </Text>{" "}
+                  Followers
+                </Text>
+              </Link>
+              <Link href={"/following/" + curUser.id}>
+                <Text>
+                  <Text as="span" fontWeight="semibold" fontSize="1.2rem">
+                    {curUser.num_following - 1}
+                  </Text>{" "}
+                  Followings
+                </Text>
+              </Link>
               <Link href={"/user_post/" + curUser.id}>
                 <Text>
                   <Text as="span" fontWeight="semibold" fontSize="1.2rem">

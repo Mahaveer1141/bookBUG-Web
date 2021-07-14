@@ -93,3 +93,8 @@ export interface LibraryProps {
   user: UserType;
   books: any;
 }
+
+export interface EditPostProps {
+  user: UserType;
+  post: PostType;
+}
