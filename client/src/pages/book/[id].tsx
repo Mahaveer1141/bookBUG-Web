@@ -57,7 +57,7 @@ const ShowBook: React.FC<ShowBookProps> = ({ user, book, alreadyAdded }) => {
                 >
                   {isAdded ? "Remove" : "Add"}
                 </Button>
-                <Button size="xs">Discussion</Button>
+                {/* <Button size="xs">Discussion</Button> */}
               </Stack>
             </Stack>
           </Flex>

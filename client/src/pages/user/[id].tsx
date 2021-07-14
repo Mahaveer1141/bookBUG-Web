@@ -58,7 +58,7 @@ const ShowUser: React.FC<ShowUserProps> = ({ user, curUser, books }) => {
               >
                 {isFollowed ? "Unfollow" : "Follow"}
               </Button>
-              <Button size="xs">Message</Button>
+              {/* <Button size="xs">Message</Button> */}
             </Stack>
           </Flex>
           <Box mt="2rem">

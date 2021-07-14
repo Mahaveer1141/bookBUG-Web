@@ -38,7 +38,7 @@ const Sidebar: React.FC<SidebarProps> = ({ page }) => {
           title="Home"
           active={page === "Home" ? true : false}
         />
-        <NavItem
+        {/* <NavItem
           to="/"
           navSize={changeSize ? "small" : "large"}
           icon={FiMessageSquare}
@@ -51,7 +51,7 @@ const Sidebar: React.FC<SidebarProps> = ({ page }) => {
           icon={FiMessageCircle}
           title="Messages"
           active={page === "Messages" ? true : false}
-        />
+        /> */}
         <NavItem
           to="/library"
           navSize={changeSize ? "small" : "large"}
