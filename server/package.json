@@ -6,7 +6,9 @@
   "dependencies": {
     "apollo-server": "^2.25.1",
     "body-parser": "^1.19.0",
+    "connect-pg-simple": "^6.2.1",
     "connect-redis": "^6.0.0",
+    "connect-typeorm": "^1.1.4",
     "cookie-parser": "^1.4.5",
     "cors": "^2.8.5",
     "dotenv": "^10.0.0",
@@ -24,6 +26,7 @@
   },
   "devDependencies": {
     "@types/body-parser": "^1.19.0",
+    "@types/connect-pg-simple": "^4.2.4",
     "@types/connect-redis": "0.0.16",
     "@types/cookie-parser": "^1.4.2",
     "@types/cors": "^2.8.10",
@@ -39,6 +42,7 @@
     "typescript": "^4.3.2"
   },
   "scripts": {
+    "postinstall": "tsc",
     "watch": "tsc -w",
     "dev": "nodemon dist/index.js"
   },
