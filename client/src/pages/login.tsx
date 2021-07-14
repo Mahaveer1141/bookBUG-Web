@@ -59,7 +59,7 @@ const Login: React.FC = () => {
               w="100%"
               isLoading={googleSubmitting}
               as="a"
-              href="http://localhost:5000/auth/google"
+              href="https://book-bug.herokuapp.com/auth/google"
               mt="1rem"
               bg="#fff"
               disabled={githubSubmitting}
