@@ -1,7 +1,7 @@
 import { Flex, Image, Box, Text, Button } from "@chakra-ui/react";
 import React from "react";
 import { useState } from "react";
-import { useAddBookMutation, useCheckBookQuery } from "../generated/graphql";
+import { useAddBookMutation } from "../generated/graphql";
 
 interface IProps {
   item: any;
