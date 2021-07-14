@@ -80,7 +80,7 @@ const main = async () => {
   app.use(
     cors({
       credentials: true,
-      origin: "https://bookbug1.herokuapp.com",
+      origin: "http://localhost:3000",
     })
   );
   app.use(require("body-parser").json({ limit: "50mb" }));
@@ -92,8 +92,8 @@ const main = async () => {
   //  routes
   app.use("/auth", authRoutes);
 
-  app.get("/", (_req, res) => {
-    res.send("b");
+  app.get("/", (req, res) => {
+    res.send(req.cookies.qid);
   });
 
   const schema = await buildSchema({
@@ -109,6 +109,8 @@ const main = async () => {
   });
 
   const apolloServer = new ApolloServer({
+    introspection: true,
+    playground: true,
     schema,
     context: ({ req, res }: MyContext) => {
       return { req, res };

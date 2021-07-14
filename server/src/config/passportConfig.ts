@@ -70,7 +70,7 @@ const passportConfig = () => {
       {
         clientID: client_id_google,
         clientSecret: client_secret_google,
-        callbackURL: "https://book-bug.herokuapp.com/auth/oauth/google",
+        callbackURL: "http://localhost:5000/auth/oauth/google",
       },
       async (accessToken: any, refreshToken: any, profile: any, cb: any) => {
         const email: string = profile.emails[0].value;

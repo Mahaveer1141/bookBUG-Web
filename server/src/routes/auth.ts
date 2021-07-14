@@ -38,7 +38,7 @@ router.get(
     console.log(req.session);
 
     // Successful authentication, redirect home.
-    res.redirect("https://book-bug-web.vercel.app/me");
+    res.redirect("http://localhost:3000/me");
   }
 );
 

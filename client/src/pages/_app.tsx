@@ -5,7 +5,7 @@ import theme from "../../theme";
 
 function MyApp({ Component, pageProps }) {
   const apolloClient = new ApolloClient({
-    uri: "https://book-bug.herokuapp.com/graphql",
+    uri: "http://localhost:5000/graphql",
     credentials: "include",
 
     cache: new InMemoryCache(),
