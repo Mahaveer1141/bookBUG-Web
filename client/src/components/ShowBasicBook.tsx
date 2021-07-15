@@ -17,7 +17,7 @@ const ShowBasicBook: React.FC<IProps> = ({ item, alreadyAdded }) => {
       <Flex alignItems="center" mt="1.5rem">
         <Flex as="a" href={"/book/" + item.id}>
           <Image
-            src={item.volumeInfo.imageLinks.smallThumbnail}
+            src={item.volumeInfo?.imageLinks?.smallThumbnail}
             h="60px"
             w="60px"
             borderRadius="100px"
