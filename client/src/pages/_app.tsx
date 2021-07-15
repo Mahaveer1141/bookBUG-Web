@@ -6,8 +6,6 @@ import theme from "../../theme";
 function MyApp({ Component, pageProps }) {
   const apolloClient = new ApolloClient({
     uri: "http://localhost:5000/graphql",
-    credentials: "include",
-
     cache: new InMemoryCache(),
   });
   return (

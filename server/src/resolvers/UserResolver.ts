@@ -11,6 +11,7 @@ import {
 } from "type-graphql";
 import { getConnection } from "typeorm";
 import { Library } from "../entities/Library";
+import { Follows } from "../entities/Follows";
 
 @ObjectType()
 class UserResponse {
@@ -21,12 +22,14 @@ class UserResponse {
   user?: Users;
 }
 
+export let currentUserId: null | number = null;
+
 @Resolver()
 export class UserResolver {
   @Query(() => Users, { nullable: true })
-  async Me(@Ctx() { req }: MyContext): Promise<Users | undefined> {
-    const id = req.session.userID;
-    if (id === undefined) return id;
+  async Me(@Ctx() { userID }: MyContext): Promise<Users | null> {
+    const id = userID;
+    if (id === null) return id;
     const data = await getConnection().query(`
       select *,
         (select count("followerId") as num_follower from follows where "followingId"=${id}),
@@ -37,14 +40,38 @@ export class UserResolver {
     return data[0];
   }
 
+  @Mutation(() => Users, { nullable: true })
+  async addUser(
+    @Arg("name") name: string,
+    @Arg("email") email: string,
+    @Arg("imageUrl") imageUrl: string
+  ) {
+    const curUser = {
+      displayName: name,
+      username: Math.random().toString(36).substring(8),
+      email: email,
+      photoUrl: imageUrl,
+      bio: "",
+    };
+    let user = await Users.findOne({ email: email });
+    if (user !== undefined) {
+      currentUserId = user.id;
+      return user;
+    }
+    user = await Users.create(curUser).save();
+    currentUserId = user.id;
+    Follows.create({ followerId: user.id, followingId: user.id }).save();
+    return user;
+  }
+
   @Mutation(() => UserResponse, { nullable: true })
   async UpdateUser(
-    @Ctx() { req }: MyContext,
+    @Ctx() { userID }: MyContext,
     @Arg("username") username: string,
     @Arg("displayName") displayName: string,
     @Arg("bio") bio: string
   ): Promise<UserResponse | undefined> {
-    const id = req.session.userID;
+    const id = Number(userID);
     const data = await Users.findOne({ username });
     const user = await Users.findOne({ id });
     if (!user) return undefined;
@@ -68,18 +95,16 @@ export class UserResolver {
   }
 
   @Mutation(() => Boolean)
-  Logout(@Ctx() { req, res }: MyContext) {
-    req.session.destroy(() => console.log("destroyed"));
-    res.clearCookie("qid");
-    return false;
+  Logout() {
+    currentUserId = null;
+    return true;
   }
 
   @Query(() => [Users], { nullable: true })
   async getSearchUsers(
     @Arg("detail") deatil: String,
-    @Ctx() { req }: MyContext
+    @Ctx() { userID }: MyContext
   ) {
-    const { userID } = req.session;
     const data = await getConnection().query(`
       select *,
         (select case 
@@ -94,8 +119,7 @@ export class UserResolver {
   }
 
   @Query(() => Users)
-  async getOneUser(@Arg("id") id: number, @Ctx() { req }: MyContext) {
-    const { userID } = req.session;
+  async getOneUser(@Arg("id") id: number, @Ctx() { userID }: MyContext) {
     const data = await getConnection().query(`
       select *,
         (select count("followerId") as num_follower from follows where "followingId"=${id}),
@@ -111,11 +135,10 @@ export class UserResolver {
   }
 
   @Mutation(() => String)
-  async addBook(@Arg("bookId") bookId: string, @Ctx() { req }: MyContext) {
-    const { userID } = req.session;
+  async addBook(@Arg("bookId") bookId: string, @Ctx() { userID }: MyContext) {
     const book = {
       bookId: bookId,
-      userId: userID,
+      userId: Number(userID),
     };
     const data = await Library.delete(book);
     if (data.affected === 0) {

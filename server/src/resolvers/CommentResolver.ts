@@ -7,12 +7,12 @@ import { getConnection } from "typeorm";
 export class CommentResolver {
   @Mutation(() => Comments)
   async createComment(
-    @Ctx() { req }: MyContext,
+    @Ctx() { userID }: MyContext,
     @Arg("postId") postId: number,
     @Arg("comment") comment: string
   ) {
     const createdComment = await Comments.create({
-      creatorId: req.session.userID,
+      creatorId: Number(userID),
       postId: postId,
       comment: comment,
     }).save();
@@ -26,8 +26,10 @@ export class CommentResolver {
   }
 
   @Query(() => [Comments])
-  async getComments(@Ctx() { req }: MyContext, @Arg("postId") postId: number) {
-    const userId = req.session.userID;
+  async getComments(
+    @Ctx() { userID }: MyContext,
+    @Arg("postId") postId: number
+  ) {
     const data = await getConnection().query(`
       select c.*,
         json_build_object(
@@ -37,7 +39,7 @@ export class CommentResolver {
           'photoUrl', u."photoUrl"
         ) creator,
         (select case
-          when c."creatorId"=${userId} then TRUE
+          when c."creatorId"=${userID} then TRUE
           else FALSE
           end "isMe")
         from comments c inner join users u

@@ -6,8 +6,7 @@ import { getConnection } from "typeorm";
 @Resolver(Post)
 export class PostResolver {
   @Query(() => [Post])
-  async getAllPost(@Ctx() { req }: MyContext) {
-    const { userID } = req.session;
+  async getAllPost(@Ctx() { userID }: MyContext) {
     if (userID !== undefined) {
       const data = await getConnection().query(`
         select p.*,
@@ -37,8 +36,10 @@ export class PostResolver {
   }
 
   @Query(() => Post)
-  async getOnePost(@Arg("postId") postId: number, @Ctx() { req }: MyContext) {
-    const { userID } = req.session;
+  async getOnePost(
+    @Arg("postId") postId: number,
+    @Ctx() { userID }: MyContext
+  ) {
     const data: Post[] = await getConnection().query(`
       select p.*, 
       json_build_object(
@@ -66,8 +67,10 @@ export class PostResolver {
   }
 
   @Query(() => [Post])
-  async getUsersPost(@Arg("userId") userId: number, @Ctx() { req }: MyContext) {
-    const { userID } = req.session;
+  async getUsersPost(
+    @Arg("userId") userId: number,
+    @Ctx() { userID }: MyContext
+  ) {
     const data: Post[] = await getConnection().query(`
       select p.*, 
       json_build_object(
@@ -119,11 +122,11 @@ export class PostResolver {
 
   @Mutation(() => Post)
   async createPost(
-    @Ctx() { req }: MyContext,
+    @Ctx() { userID }: MyContext,
     @Arg("text") text: string,
     @Arg("imageUrl") imageUrl: string
   ) {
-    const creatorId = req.session.userID;
+    const creatorId = Number(userID);
     const curPost = {
       creatorId: creatorId,
       text: text,

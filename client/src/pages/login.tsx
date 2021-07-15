@@ -1,18 +1,27 @@
-import React, { useState } from "react";
+import React from "react";
 import { Box, Flex, Text } from "@chakra-ui/layout";
-import { Button } from "@chakra-ui/button";
 import { Image } from "@chakra-ui/react";
 import NextLink from "next/link";
 import { GetServerSideProps } from "next";
 import { createClient } from "../utils/apolloClient";
 import { MeQuery } from "../utils/MeQuery";
+import { GoogleLogin } from "react-google-login";
+import router from "next/router";
+import { useAddUserMutation } from "../generated/graphql";
 
 // Join the community of Readers with bookBUG.
 // Connect with other passionate readers and get book recommendations and suggestions all at one place.
 
 const Login: React.FC = () => {
-  const [googleSubmitting, setGoogleSubmitting] = useState<boolean>(false);
-  const [githubSubmitting, setGithubSubmitting] = useState<boolean>(false);
+  const [addUser] = useAddUserMutation();
+
+  const responseGoogle = async (response) => {
+    const { name, email, imageUrl } = response.profileObj;
+    await addUser({
+      variables: { email: email, name: name, imageUrl: imageUrl },
+    });
+    router.push("/me");
+  };
 
   return (
     <div>
@@ -54,38 +63,13 @@ const Login: React.FC = () => {
           <Text mt="0.4rem" fontSize="1.1rem">
             Login to continue
           </Text>
-          <Flex flexDirection="column">
-            <Button
-              w="100%"
-              isLoading={googleSubmitting}
-              as="a"
-              href="http://localhost:5000/auth/google"
-              mt="1rem"
-              bg="#fff"
-              disabled={githubSubmitting}
-              onClick={() => {
-                githubSubmitting ? null : setGoogleSubmitting(true);
-              }}
-            >
-              <Image mr={5} h="22px" w="22px" src="/static/Google.svg" />
-              Log in with Google
-            </Button>
-            <Button
-              w="100%"
-              isLoading={githubSubmitting}
-              as="a"
-              href="http://localhost:5000/auth/github"
-              mt="1rem"
-              variant="black"
-              color="white"
-              disabled={googleSubmitting}
-              onClick={() => {
-                googleSubmitting ? null : setGithubSubmitting(true);
-              }}
-            >
-              <Image mr={5} h="22px" w="22px" src="/static/Github.svg" />
-              Log in with Github
-            </Button>
+          <Flex mt="1rem" flexDirection="column">
+            <GoogleLogin
+              style={{ background: "#000" }}
+              clientId="1092901876199-p2vvact8a0i4g28u2tv2mbkngef7t70d.apps.googleusercontent.com"
+              onSuccess={responseGoogle}
+              onFailure={(err) => console.log(err)}
+            />
           </Flex>
         </Box>
       </Flex>
@@ -95,7 +79,6 @@ const Login: React.FC = () => {
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const apolloClient = createClient(ctx as any);
-
   const { data } = await apolloClient.query({
     query: MeQuery,
   });

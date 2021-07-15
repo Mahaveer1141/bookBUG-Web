@@ -8,12 +8,11 @@ import { getConnection } from "typeorm";
 export class FollowResovler {
   @Mutation(() => String)
   async makeFollow(
-    @Ctx() { req }: MyContext,
+    @Ctx() { userID }: MyContext,
     @Arg("followerId") followingId: number
   ) {
-    const { userID } = req.session;
     const follows = {
-      followerId: userID,
+      followerId: Number(userID),
       followingId: followingId,
     };
     const data = await Follows.delete(follows);
@@ -25,8 +24,10 @@ export class FollowResovler {
   }
 
   @Query(() => [Users])
-  async getFollowers(@Arg("userId") userId: number, @Ctx() { req }: MyContext) {
-    const { userID } = req.session;
+  async getFollowers(
+    @Arg("userId") userId: number,
+    @Ctx() { userID }: MyContext
+  ) {
     const data = await getConnection().query(`
      select 
       u.*,
@@ -44,9 +45,8 @@ export class FollowResovler {
   @Query(() => [Users])
   async getFollowings(
     @Arg("userId") userId: number,
-    @Ctx() { req }: MyContext
+    @Ctx() { userID }: MyContext
   ) {
-    const { userID } = req.session;
     const data = await getConnection().query(`
      select 
       u.*,

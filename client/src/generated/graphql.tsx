@@ -27,6 +27,7 @@ export type Comments = {
 
 export type Mutation = {
   __typename?: 'Mutation';
+  addUser?: Maybe<Users>;
   UpdateUser?: Maybe<UserResponse>;
   Logout: Scalars['Boolean'];
   addBook: Scalars['String'];
@@ -37,6 +38,13 @@ export type Mutation = {
   createComment: Comments;
   deleteComment: Scalars['String'];
   makeFollow: Scalars['String'];
+};
+
+
+export type MutationAddUserArgs = {
+  imageUrl: Scalars['String'];
+  email: Scalars['String'];
+  name: Scalars['String'];
 };
 
 
@@ -108,7 +116,7 @@ export type Post = {
 export type Query = {
   __typename?: 'Query';
   hello: Scalars['String'];
-  Me?: Maybe<Users>;
+  Me: Users;
   getSearchUsers?: Maybe<Array<Users>>;
   getOneUser: Users;
   getBooksId?: Maybe<Array<Scalars['String']>>;
@@ -188,6 +196,21 @@ export type AddBookMutationVariables = Exact<{
 export type AddBookMutation = (
   { __typename?: 'Mutation' }
   & Pick<Mutation, 'addBook'>
+);
+
+export type AddUserMutationVariables = Exact<{
+  name: Scalars['String'];
+  email: Scalars['String'];
+  imageUrl: Scalars['String'];
+}>;
+
+
+export type AddUserMutation = (
+  { __typename?: 'Mutation' }
+  & { addUser?: Maybe<(
+    { __typename?: 'Users' }
+    & Pick<Users, 'id' | 'email'>
+  )> }
 );
 
 export type ChangeLikeMutationVariables = Exact<{
@@ -351,10 +374,10 @@ export type MeQueryVariables = Exact<{ [key: string]: never; }>;
 
 export type MeQuery = (
   { __typename?: 'Query' }
-  & { Me?: Maybe<(
+  & { Me: (
     { __typename?: 'Users' }
     & Pick<Users, 'id' | 'email' | 'displayName' | 'username' | 'photoUrl'>
-  )> }
+  ) }
 );
 
 
@@ -389,6 +412,42 @@ export function useAddBookMutation(baseOptions?: Apollo.MutationHookOptions<AddB
 export type AddBookMutationHookResult = ReturnType<typeof useAddBookMutation>;
 export type AddBookMutationResult = Apollo.MutationResult<AddBookMutation>;
 export type AddBookMutationOptions = Apollo.BaseMutationOptions<AddBookMutation, AddBookMutationVariables>;
+export const AddUserDocument = gql`
+    mutation AddUser($name: String!, $email: String!, $imageUrl: String!) {
+  addUser(name: $name, email: $email, imageUrl: $imageUrl) {
+    id
+    email
+  }
+}
+    `;
+export type AddUserMutationFn = Apollo.MutationFunction<AddUserMutation, AddUserMutationVariables>;
+
+/**
+ * __useAddUserMutation__
+ *
+ * To run a mutation, you first call `useAddUserMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useAddUserMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [addUserMutation, { data, loading, error }] = useAddUserMutation({
+ *   variables: {
+ *      name: // value for 'name'
+ *      email: // value for 'email'
+ *      imageUrl: // value for 'imageUrl'
+ *   },
+ * });
+ */
+export function useAddUserMutation(baseOptions?: Apollo.MutationHookOptions<AddUserMutation, AddUserMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<AddUserMutation, AddUserMutationVariables>(AddUserDocument, options);
+      }
+export type AddUserMutationHookResult = ReturnType<typeof useAddUserMutation>;
+export type AddUserMutationResult = Apollo.MutationResult<AddUserMutation>;
+export type AddUserMutationOptions = Apollo.BaseMutationOptions<AddUserMutation, AddUserMutationVariables>;
 export const ChangeLikeDocument = gql`
     mutation ChangeLike($postId: Float!) {
   changeLike(postId: $postId)

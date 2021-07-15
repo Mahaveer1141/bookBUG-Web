@@ -5,10 +5,12 @@ import { Likes } from "../entities/Likes";
 @Resolver()
 export class LikeResolver {
   @Mutation(() => String)
-  async changeLike(@Arg("postId") postId: number, @Ctx() { req }: MyContext) {
-    const { userID } = req.session;
+  async changeLike(
+    @Arg("postId") postId: number,
+    @Ctx() { userID }: MyContext
+  ) {
     const like = {
-      user_id: userID,
+      user_id: Number(userID),
       postId: postId,
     };
     console.log(like);
