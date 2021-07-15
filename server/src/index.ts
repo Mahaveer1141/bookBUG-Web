@@ -7,7 +7,6 @@ import { HelloResolver } from "./resolvers/HelloResolver";
 import { createConnection } from "typeorm";
 import { MyContext } from "./config/types";
 import { UserResolver, currentUserId } from "./resolvers/UserResolver";
-import cookieParser from "cookie-parser";
 import { PostResolver } from "./resolvers/PostResolver";
 import { LikeResolver } from "./resolvers/LikeResolver";
 import { CommentResolver } from "./resolvers/CommentResolver";
@@ -44,11 +43,10 @@ const main = async () => {
   //   entities: ["dist/entities/*.js"],
   // });
 
-  app.use(cookieParser());
   app.use(
     cors({
       credentials: true,
-      origin: "http://localhost:3000",
+      origin: "https://book-bug.vercel.app",
     })
   );
   app.use(require("body-parser").json({ limit: "50mb" }));

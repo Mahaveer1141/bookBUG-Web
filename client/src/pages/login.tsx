@@ -66,7 +66,7 @@ const Login: React.FC = () => {
           <Flex mt="1rem" flexDirection="column">
             <GoogleLogin
               style={{ background: "#000" }}
-              clientId="1092901876199-p2vvact8a0i4g28u2tv2mbkngef7t70d.apps.googleusercontent.com"
+              clientId="1092901876199-aqnfju6nsah2llkc85jk0cl1heg9mgla.apps.googleusercontent.com"
               onSuccess={responseGoogle}
               onFailure={(err) => console.log(err)}
             />
