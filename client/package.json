@@ -14,16 +14,18 @@
     "@chakra-ui/react": "^1.6.3",
     "@emotion/react": "^11.4.0",
     "@emotion/styled": "^11.3.0",
+    "apollo-link-token-refresh": "^0.3.2",
     "formik": "^2.1.5",
     "framer-motion": "^4.1.17",
     "graphql": "^15.5.0",
-    "js-cookie": "^2.2.1",
+    "jwt-decode": "^3.1.2",
     "next": "10.2.3",
     "react": "17.0.2",
     "react-dom": "17.0.2",
     "react-google-login": "^5.2.2",
     "react-icons": "^4.2.0",
-    "react-responsive": "^8.2.0"
+    "react-responsive": "^8.2.0",
+    "universal-cookie": "^4.0.4"
   },
   "devDependencies": {
     "@graphql-codegen/cli": "1.21.5",

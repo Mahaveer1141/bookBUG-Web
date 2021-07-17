@@ -1,18 +1,18 @@
 import { Comments } from "../entities/Comments";
 import { Arg, Ctx, Mutation, Query, Resolver } from "type-graphql";
-import { MyContext } from "src/config/types";
+import { MyContext } from "src/utils/types";
 import { getConnection } from "typeorm";
 
 @Resolver()
 export class CommentResolver {
   @Mutation(() => Comments)
   async createComment(
-    @Ctx() { userID }: MyContext,
+    @Ctx() { req }: MyContext,
     @Arg("postId") postId: number,
     @Arg("comment") comment: string
   ) {
     const createdComment = await Comments.create({
-      creatorId: Number(userID),
+      creatorId: Number(req.user?.userID),
       postId: postId,
       comment: comment,
     }).save();
@@ -26,10 +26,7 @@ export class CommentResolver {
   }
 
   @Query(() => [Comments])
-  async getComments(
-    @Ctx() { userID }: MyContext,
-    @Arg("postId") postId: number
-  ) {
+  async getComments(@Ctx() { req }: MyContext, @Arg("postId") postId: number) {
     const data = await getConnection().query(`
       select c.*,
         json_build_object(
@@ -39,7 +36,7 @@ export class CommentResolver {
           'photoUrl', u."photoUrl"
         ) creator,
         (select case
-          when c."creatorId"=${userID} then TRUE
+          when c."creatorId"=${req.user?.userID} then TRUE
           else FALSE
           end "isMe")
         from comments c inner join users u

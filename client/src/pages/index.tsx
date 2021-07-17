@@ -9,6 +9,7 @@ import { IoMdCreate } from "react-icons/io";
 import ShowPost from "../components/ShowPost";
 import Nextlink from "next/link";
 import { useGetAllPostQuery } from "../generated/graphql";
+import { gql } from "@apollo/client";
 
 const Navbar = dynamic(import("../components/Navbar"), {
   ssr: typeof window === undefined,
@@ -74,9 +75,24 @@ const App: React.FC<MeProps> = ({ user }) => {
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const apolloClient = createClient(ctx as any);
+  const id = Number(ctx.req.cookies.userID);
 
   const { data } = await apolloClient.query({
-    query: MeQuery,
+    query: gql`
+      query Me {
+        Me(userID: 1) {
+          id
+          email
+          displayName
+          username
+          photoUrl
+          bio
+          num_following
+          num_follower
+          num_post
+        }
+      }
+    `,
   });
 
   if (data?.Me === null) {

@@ -1,4 +1,4 @@
-import { MyContext } from "../config/types";
+import { MyContext } from "../utils/types";
 import { Users } from "../entities/User";
 import {
   Arg,
@@ -11,7 +11,10 @@ import {
 } from "type-graphql";
 import { getConnection } from "typeorm";
 import { Library } from "../entities/Library";
+import jwt from "jsonwebtoken";
 import { Follows } from "../entities/Follows";
+import { generateAccessToken } from "../utils/generateAccessToken";
+import { RefreshToken } from "../entities/RefreshToken";
 
 @ObjectType()
 class UserResponse {
@@ -22,14 +25,21 @@ class UserResponse {
   user?: Users;
 }
 
-export let currentUserId: null | number = null;
+@ObjectType()
+class Tokens {
+  @Field()
+  accessToken: string;
+
+  @Field()
+  refreshToken: string;
+}
 
 @Resolver()
 export class UserResolver {
   @Query(() => Users, { nullable: true })
-  async Me(@Ctx() { userID }: MyContext): Promise<Users | null> {
-    const id = userID;
-    if (id === null) return id;
+  async Me(@Ctx() { req }: MyContext): Promise<Users | undefined> {
+    const id = req.user?.userID;
+    if (id === undefined) return id;
     const data = await getConnection().query(`
       select *,
         (select count("followerId") as num_follower from follows where "followingId"=${id}),
@@ -40,8 +50,8 @@ export class UserResolver {
     return data[0];
   }
 
-  @Mutation(() => Users, { nullable: true })
-  async addUser(
+  @Mutation(() => Tokens, { nullable: true })
+  async login(
     @Arg("name") name: string,
     @Arg("email") email: string,
     @Arg("imageUrl") imageUrl: string
@@ -53,25 +63,49 @@ export class UserResolver {
       photoUrl: imageUrl,
       bio: "",
     };
+
     let user = await Users.findOne({ email: email });
     if (user !== undefined) {
-      currentUserId = user.id;
-      return user;
+      const data = {
+        userID: user.id,
+      };
+      const accessToken = generateAccessToken(data);
+      const refreshToken = jwt.sign(
+        data,
+        process.env.REFRESH_TOKEN_SECRET || ""
+      );
+      const response: Tokens = {
+        accessToken: accessToken,
+        refreshToken: refreshToken,
+      };
+      console.log(response);
+      RefreshToken.create({ refreshToken }).save();
+      return response;
     }
     user = await Users.create(curUser).save();
-    currentUserId = user.id;
+    const data = {
+      userID: user.id,
+    };
     Follows.create({ followerId: user.id, followingId: user.id }).save();
-    return user;
+    const accessToken = generateAccessToken(data);
+    const refreshToken = jwt.sign(data, process.env.REFRESH_TOKEN_SECRET || "");
+    const response: Tokens = {
+      accessToken: accessToken,
+      refreshToken: refreshToken,
+    };
+    console.log(response);
+    RefreshToken.create({ refreshToken }).save();
+    return response;
   }
 
   @Mutation(() => UserResponse, { nullable: true })
   async UpdateUser(
-    @Ctx() { userID }: MyContext,
+    @Ctx() { req }: MyContext,
     @Arg("username") username: string,
     @Arg("displayName") displayName: string,
     @Arg("bio") bio: string
   ): Promise<UserResponse | undefined> {
-    const id = Number(userID);
+    const id = Number(req.user?.userID);
     const data = await Users.findOne({ username });
     const user = await Users.findOne({ id });
     if (!user) return undefined;
@@ -95,16 +129,17 @@ export class UserResolver {
   }
 
   @Mutation(() => Boolean)
-  Logout() {
-    currentUserId = null;
+  Logout(@Arg("refreshToken") refreshToken: string) {
+    RefreshToken.delete({ refreshToken });
     return true;
   }
 
   @Query(() => [Users], { nullable: true })
   async getSearchUsers(
     @Arg("detail") deatil: String,
-    @Ctx() { userID }: MyContext
+    @Ctx() { req }: MyContext
   ) {
+    const userID = req.user?.userID;
     const data = await getConnection().query(`
       select *,
         (select case 
@@ -119,7 +154,8 @@ export class UserResolver {
   }
 
   @Query(() => Users)
-  async getOneUser(@Arg("id") id: number, @Ctx() { userID }: MyContext) {
+  async getOneUser(@Arg("id") id: number, @Ctx() { req }: MyContext) {
+    const userID = req.user?.userID;
     const data = await getConnection().query(`
       select *,
         (select count("followerId") as num_follower from follows where "followingId"=${id}),
@@ -135,7 +171,8 @@ export class UserResolver {
   }
 
   @Mutation(() => String)
-  async addBook(@Arg("bookId") bookId: string, @Ctx() { userID }: MyContext) {
+  async addBook(@Arg("bookId") bookId: string, @Ctx() { req }: MyContext) {
+    const userID = req.user?.userID;
     const book = {
       bookId: bookId,
       userId: Number(userID),

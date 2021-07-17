@@ -24,6 +24,7 @@ import { useRouter } from "next/router";
 import { MeProps } from "../types";
 import { useLogoutMutation, useUpdateUserMutation } from "../generated/graphql";
 import dynamic from "next/dynamic";
+import { gql } from "@apollo/client";
 
 const Navbar = dynamic(import("../components/Navbar"), {
   ssr: typeof window === undefined,
@@ -210,7 +211,21 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const apolloClient = createClient(ctx as any);
 
   const { data } = await apolloClient.query({
-    query: MeQuery,
+    query: gql`
+      query Me {
+        Me(userID: 1) {
+          id
+          email
+          displayName
+          username
+          photoUrl
+          bio
+          num_following
+          num_follower
+          num_post
+        }
+      }
+    `,
   });
 
   if (data?.Me === null) {

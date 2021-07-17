@@ -1,4 +1,4 @@
-import { MyContext } from "../config/types";
+import { MyContext } from "../utils/types";
 import { Arg, Ctx, Mutation, Query, Resolver } from "type-graphql";
 import { Post } from "../entities/Post";
 import { getConnection } from "typeorm";
@@ -6,7 +6,8 @@ import { getConnection } from "typeorm";
 @Resolver(Post)
 export class PostResolver {
   @Query(() => [Post])
-  async getAllPost(@Ctx() { userID }: MyContext) {
+  async getAllPost(@Ctx() { req }: MyContext) {
+    const userID = req.user?.userID;
     if (userID !== undefined) {
       const data = await getConnection().query(`
         select p.*,
@@ -36,10 +37,8 @@ export class PostResolver {
   }
 
   @Query(() => Post)
-  async getOnePost(
-    @Arg("postId") postId: number,
-    @Ctx() { userID }: MyContext
-  ) {
+  async getOnePost(@Arg("postId") postId: number, @Ctx() { req }: MyContext) {
+    const userID = req.user?.userID;
     const data: Post[] = await getConnection().query(`
       select p.*, 
       json_build_object(
@@ -67,10 +66,8 @@ export class PostResolver {
   }
 
   @Query(() => [Post])
-  async getUsersPost(
-    @Arg("userId") userId: number,
-    @Ctx() { userID }: MyContext
-  ) {
+  async getUsersPost(@Arg("userId") userId: number, @Ctx() { req }: MyContext) {
+    const userID = req.user?.userID;
     const data: Post[] = await getConnection().query(`
       select p.*, 
       json_build_object(
@@ -122,11 +119,11 @@ export class PostResolver {
 
   @Mutation(() => Post)
   async createPost(
-    @Ctx() { userID }: MyContext,
+    @Ctx() { req }: MyContext,
     @Arg("text") text: string,
     @Arg("imageUrl") imageUrl: string
   ) {
-    const creatorId = Number(userID);
+    const creatorId = Number(req.user?.userID);
     const curPost = {
       creatorId: creatorId,
       text: text,

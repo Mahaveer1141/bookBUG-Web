@@ -8,6 +8,8 @@ import { MeQuery } from "../utils/MeQuery";
 import { GoogleLogin } from "react-google-login";
 import router from "next/router";
 import { useAddUserMutation } from "../generated/graphql";
+import Cookies from "universal-cookie";
+import { gql } from "@apollo/client";
 
 // Join the community of Readers with bookBUG.
 // Connect with other passionate readers and get book recommendations and suggestions all at one place.
@@ -17,9 +19,12 @@ const Login: React.FC = () => {
 
   const responseGoogle = async (response) => {
     const { name, email, imageUrl } = response.profileObj;
-    await addUser({
+    const { data } = await addUser({
       variables: { email: email, name: name, imageUrl: imageUrl },
     });
+    const cookies = new Cookies();
+    cookies.set("userID", data.addUser.id.toString());
+
     router.push("/me");
   };
 
@@ -80,10 +85,22 @@ const Login: React.FC = () => {
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const apolloClient = createClient(ctx as any);
   const { data } = await apolloClient.query({
-    query: MeQuery,
+    query: gql`
+      query Me {
+        Me(userID: 1) {
+          id
+          email
+          displayName
+          username
+          photoUrl
+          bio
+          num_following
+          num_follower
+          num_post
+        }
+      }
+    `,
   });
-
-  console.log(data);
 
   if (data?.Me !== null) {
     return {
