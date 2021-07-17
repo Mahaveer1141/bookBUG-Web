@@ -8,6 +8,7 @@ import {
 import { TokenRefreshLink } from "apollo-link-token-refresh";
 import jwtDecode from "jwt-decode";
 import cookie from "cookie";
+import { API_URL } from "./constants";
 
 export const createClient = (ctx) => {
   const req = ctx.req;
@@ -67,7 +68,7 @@ export const createClient = (ctx) => {
           }
         },
         fetchAccessToken: () => {
-          return fetch("http://localhost:5000/token", {
+          return fetch(`${API_URL}/token`, {
             method: "POST",
             headers: {
               Accept: "application/json",
@@ -91,7 +92,7 @@ export const createClient = (ctx) => {
       }),
       requestLink,
       new HttpLink({
-        uri: "http://localhost:5000/graphql",
+        uri: `${API_URL}/graphql`,
       }),
     ]),
     cache: new InMemoryCache(),

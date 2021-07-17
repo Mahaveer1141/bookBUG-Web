@@ -11,6 +11,7 @@ import { TokenRefreshLink } from "apollo-link-token-refresh";
 import jwtDecode from "jwt-decode";
 import React from "react";
 import theme from "../../theme";
+import { API_URL } from "../utils/constants";
 import {
   getAccessToken,
   getRefreshToken,
@@ -72,7 +73,7 @@ function MyApp({ Component, pageProps }) {
           }
         },
         fetchAccessToken: () => {
-          return fetch("http://localhost:5000/token", {
+          return fetch(`${API_URL}/token`, {
             method: "POST",
             headers: {
               Accept: "application/json",
@@ -93,7 +94,7 @@ function MyApp({ Component, pageProps }) {
       }),
       requestLink,
       new HttpLink({
-        uri: "http://localhost:5000/graphql",
+        uri: `${API_URL}/graphql`,
       }),
     ]),
     cache: new InMemoryCache(),

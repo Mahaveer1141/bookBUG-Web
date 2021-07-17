@@ -9,6 +9,7 @@ import { GoogleLogin } from "react-google-login";
 import router from "next/router";
 import { useLoginMutation } from "../generated/graphql";
 import { setAccessToken, setRefreshToken } from "../utils/tokens";
+import { CLIENT_ID } from "../utils/constants";
 // Join the community of Readers with bookBUG.
 // Connect with other passionate readers and get book recommendations and suggestions all at one place.
 
@@ -67,8 +68,7 @@ const Login: React.FC = () => {
           </Text>
           <Flex mt="1rem" flexDirection="column">
             <GoogleLogin
-              style={{ background: "#000" }}
-              clientId="1092901876199-aqnfju6nsah2llkc85jk0cl1heg9mgla.apps.googleusercontent.com"
+              clientId={CLIENT_ID}
               onSuccess={responseGoogle}
               onFailure={(err) => console.log(err)}
             />
