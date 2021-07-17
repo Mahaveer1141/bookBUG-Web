@@ -1,6 +1,0 @@
-mutation AddUser($name: String!, $email: String!, $imageUrl: String!) {
-  addUser(name: $name, email: $email, imageUrl: $imageUrl) {
-    id
-    email
-  }
-}

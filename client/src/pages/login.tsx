@@ -7,24 +7,21 @@ import { createClient } from "../utils/apolloClient";
 import { MeQuery } from "../utils/MeQuery";
 import { GoogleLogin } from "react-google-login";
 import router from "next/router";
-import { useAddUserMutation } from "../generated/graphql";
-import Cookies from "universal-cookie";
-import { gql } from "@apollo/client";
-
+import { useLoginMutation } from "../generated/graphql";
+import { setAccessToken, setRefreshToken } from "../utils/tokens";
 // Join the community of Readers with bookBUG.
 // Connect with other passionate readers and get book recommendations and suggestions all at one place.
 
 const Login: React.FC = () => {
-  const [addUser] = useAddUserMutation();
+  const [login] = useLoginMutation();
 
   const responseGoogle = async (response) => {
     const { name, email, imageUrl } = response.profileObj;
-    const { data } = await addUser({
+    const { data } = await login({
       variables: { email: email, name: name, imageUrl: imageUrl },
     });
-    const cookies = new Cookies();
-    cookies.set("userID", data.addUser.id.toString());
-
+    setAccessToken(data.login.accessToken);
+    setRefreshToken(data.login.refreshToken);
     router.push("/me");
   };
 
@@ -85,21 +82,7 @@ const Login: React.FC = () => {
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const apolloClient = createClient(ctx as any);
   const { data } = await apolloClient.query({
-    query: gql`
-      query Me {
-        Me(userID: 1) {
-          id
-          email
-          displayName
-          username
-          photoUrl
-          bio
-          num_following
-          num_follower
-          num_post
-        }
-      }
-    `,
+    query: MeQuery,
   });
 
   if (data?.Me !== null) {

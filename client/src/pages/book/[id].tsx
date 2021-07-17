@@ -37,7 +37,11 @@ const ShowBook: React.FC<ShowBookProps> = ({ user, book, alreadyAdded }) => {
         >
           <Flex>
             <Image
-              src={book.volumeInfo?.imageLinks?.smallThumbnail}
+              src={
+                book.volumeInfo?.imageLinks?.smallThumbnail
+                  ? book.volumeInfo?.imageLinks?.smallThumbnail
+                  : "/static/DefaultBook.svg"
+              }
               w="120px"
               h="120px"
             />
@@ -70,17 +74,21 @@ const ShowBook: React.FC<ShowBookProps> = ({ user, book, alreadyAdded }) => {
                 <Text fontSize="1.1rem" fontWeight="semibold">
                   Authors :-
                 </Text>
-                {book.volumeInfo?.authors?.map((name, key) => (
-                  <Text
-                    fontSize="1.1rem"
-                    fontWeight="medium"
-                    mt="1rem"
-                    pl="1rem"
-                    key={key}
-                  >
-                    {name}
-                  </Text>
-                ))}
+                {book.volumeInfo?.authors?.length ? (
+                  book.volumeInfo?.authors?.map((name, key) => (
+                    <Text
+                      fontSize="1.1rem"
+                      fontWeight="medium"
+                      mt="1rem"
+                      pl="1rem"
+                      key={key}
+                    >
+                      {name}
+                    </Text>
+                  ))
+                ) : (
+                  <Text>NA</Text>
+                )}
               </Stack>
             </Flex>
             <Flex mt="1rem">
@@ -106,7 +114,11 @@ const ShowBook: React.FC<ShowBookProps> = ({ user, book, alreadyAdded }) => {
             <Text mt="1rem" fontSize="1.1rem" fontWeight="semibold">
               Description
             </Text>
-            <Text>{book.volumeInfo?.description}</Text>
+            <Text>
+              {book.volumeInfo?.description
+                ? book.volumeInfo?.description
+                : "NA"}
+            </Text>
           </Box>
         </Box>
       </Flex>

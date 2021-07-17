@@ -75,24 +75,8 @@ const App: React.FC<MeProps> = ({ user }) => {
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const apolloClient = createClient(ctx as any);
-  const id = Number(ctx.req.cookies.userID);
-
   const { data } = await apolloClient.query({
-    query: gql`
-      query Me {
-        Me(userID: 1) {
-          id
-          email
-          displayName
-          username
-          photoUrl
-          bio
-          num_following
-          num_follower
-          num_post
-        }
-      }
-    `,
+    query: MeQuery,
   });
 
   if (data?.Me === null) {

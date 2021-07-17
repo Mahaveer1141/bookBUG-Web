@@ -19,12 +19,12 @@ import {
 } from "@chakra-ui/react";
 import { GetServerSideProps } from "next";
 import { MeQuery } from "../utils/MeQuery";
-import { createClient } from "../utils/apolloClient";
 import { useRouter } from "next/router";
 import { MeProps } from "../types";
 import { useLogoutMutation, useUpdateUserMutation } from "../generated/graphql";
 import dynamic from "next/dynamic";
-import { gql } from "@apollo/client";
+import { createClient } from "../utils/apolloClient";
+import { clearCookies, getRefreshToken } from "../utils/tokens";
 
 const Navbar = dynamic(import("../components/Navbar"), {
   ssr: typeof window === undefined,
@@ -87,7 +87,8 @@ const Me: React.FC<MeProps> = ({ user }) => {
               <Button
                 mt="1rem"
                 onClick={() => {
-                  logout();
+                  clearCookies();
+                  logout({ variables: { refreshToken: getRefreshToken() } });
                   router.push("/login");
                 }}
                 colorScheme="red"
@@ -209,23 +210,8 @@ const Me: React.FC<MeProps> = ({ user }) => {
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const apolloClient = createClient(ctx as any);
-
   const { data } = await apolloClient.query({
-    query: gql`
-      query Me {
-        Me(userID: 1) {
-          id
-          email
-          displayName
-          username
-          photoUrl
-          bio
-          num_following
-          num_follower
-          num_post
-        }
-      }
-    `,
+    query: MeQuery,
   });
 
   if (data?.Me === null) {

@@ -1,0 +1,6 @@
+mutation Login($name: String!, $email: String!, $imageUrl: String!) {
+  login(name: $name, email: $email, imageUrl: $imageUrl) {
+    accessToken
+    refreshToken
+  }
+}

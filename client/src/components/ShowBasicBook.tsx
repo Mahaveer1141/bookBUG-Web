@@ -17,7 +17,11 @@ const ShowBasicBook: React.FC<IProps> = ({ item, alreadyAdded }) => {
       <Flex alignItems="center" mt="1.5rem">
         <Flex as="a" href={"/book/" + item.id}>
           <Image
-            src={item.volumeInfo?.imageLinks?.smallThumbnail}
+            src={
+              item.volumeInfo?.imageLinks?.smallThumbnail
+                ? item.volumeInfo?.imageLinks?.smallThumbnail
+                : "/static/DefaultBook.svg"
+            }
             h="60px"
             w="60px"
             borderRadius="100px"
@@ -25,7 +29,7 @@ const ShowBasicBook: React.FC<IProps> = ({ item, alreadyAdded }) => {
           <Box ml={3}>
             <Text fontWeight="medium">{item.volumeInfo.title}</Text>
             <Text fontSize="1.1rem" color="grey">
-              {item.volumeInfo.authors[0]}
+              {item.volumeInfo?.authors ? item.volumeInfo?.authors[0] : "NA"}
             </Text>
           </Box>
         </Flex>
