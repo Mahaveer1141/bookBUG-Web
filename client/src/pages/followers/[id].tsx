@@ -36,7 +36,7 @@ const SearchResult: React.FC<SearchProps> = ({ user, results }) => {
           </Text>
           {results.users.map((item, key) => (
             <div key={key}>
-              <ShowBasicUser user={item} />
+              <ShowBasicUser me={user} user={item} />
             </div>
           ))}
         </Box>

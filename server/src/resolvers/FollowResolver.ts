@@ -48,11 +48,11 @@ export class FollowResovler {
      select 
       u.*,
       (select case 
-        when ${req.user?.userID} in (select "followingId" from follows where("followerId"=${userId})) then TRUE
+        when ${req.user?.userID} in (select "followerId" from follows where("followingId"=${userId})) then TRUE
         else FALSE
         end "isFollowed") 
       from follows inner join users u
-      on u.id = follows."followerId"
+      on u.id = follows."followingId"
       where("followerId"=${userId} and "followingId" != ${userId});
     `);
     console.log(data);

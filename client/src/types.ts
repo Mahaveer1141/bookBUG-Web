@@ -98,3 +98,8 @@ export interface EditPostProps {
   user: UserType;
   post: PostType;
 }
+
+export interface ShowBasicUserProps {
+  me: UserType;
+  user: UserType;
+}
