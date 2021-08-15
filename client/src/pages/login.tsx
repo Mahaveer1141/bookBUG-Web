@@ -36,14 +36,14 @@ const Login: React.FC = () => {
           </Text>
         </Flex>
         <Flex mr="2rem" ml="auto">
-          <NextLink href="/">
+          <NextLink href="https://www.linkedin.com/in/mahaveer-soni-5946911a8/">
             <Image
               _hover={{ cursor: "pointer" }}
               w={["12px", "15px", "20px"]}
               src="static/Linkedin.svg"
             />
           </NextLink>
-          <NextLink href="/">
+          <NextLink href="https://github.com/Mahaveer1141/">
             <Image
               _hover={{ cursor: "pointer" }}
               ml="20px"
