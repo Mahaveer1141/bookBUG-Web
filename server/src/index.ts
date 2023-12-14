@@ -20,36 +20,33 @@ const app = express();
 
 const main = async () => {
   // for prod
+  // await createConnection({
+  //   type: "postgres",
+  //   url: process.env.DATABASE_URL,
+  //   synchronize: true,
+  //   logging: true,
+  //   entities: ["dist/entities/*.js"],
+  //   ssl: true,
+  //   extra: {
+  //     ssl: {
+  //       rejectUnauthorized: false,
+  //     },
+  //   },
+  // });
+
+  // for dev
   await createConnection({
     type: "postgres",
     url: process.env.DATABASE_URL,
     synchronize: true,
     logging: true,
     entities: ["dist/entities/*.js"],
-    ssl: true,
-    extra: {
-      ssl: {
-        rejectUnauthorized: false,
-      },
-    },
   });
-
-  // for dev
-  // await createConnection({
-  //   type: "postgres",
-  //   username: "postgres",
-  //   host: "localhost",
-  //   port: 5432,
-  //   database: "example",
-  //   synchronize: true,
-  //   logging: true,
-  //   entities: ["dist/entities/*.js"],
-  // });
 
   app.use(
     cors({
       origin: "https://book-bug.vercel.app",
-    })
+    }),
   );
   app.use(express.json({ limit: "50mb" }));
 
@@ -85,7 +82,7 @@ const main = async () => {
           }
           req.user = user;
           return { req, res };
-        }
+        },
       );
       return { req, res };
     },
@@ -104,7 +101,7 @@ const main = async () => {
         const accessToken = generateAccessToken({ userID: user.userID });
         res.json({ accessToken: accessToken });
         return;
-      }
+      },
     );
     return;
   });

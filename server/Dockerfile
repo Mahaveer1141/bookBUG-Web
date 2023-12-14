@@ -1,0 +1,15 @@
+FROM node:18-alpine
+
+RUN mkdir app
+RUN apk update && apk upgrade && apk add bash
+RUN yarn global add typescript@4.3.2 nodemon
+
+WORKDIR /app
+
+COPY . .
+
+RUN yarn
+
+CMD [ "yarn", "dev" ]
+
+EXPOSE 5000
