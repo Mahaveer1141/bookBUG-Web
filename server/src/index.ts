@@ -45,7 +45,7 @@ const main = async () => {
 
   app.use(
     cors({
-      origin: "https://book-bug.vercel.app",
+      origin: '*'
     }),
   );
   app.use(express.json({ limit: "50mb" }));
