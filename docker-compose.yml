@@ -1,4 +1,5 @@
 version: "1"
+
 services:
   postgres_db:
     image: postgres:16-alpine
@@ -10,9 +11,12 @@ services:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    networks:
+      - shared-network
 
-  app:
-    build: .
+  backend-app:
+    build: ./server
+    restart: always
     image: bookbug-server-app
     ports:
       - "5000:5000"
@@ -20,6 +24,22 @@ services:
       - postgres_db
     environment:
       DATABASE_URL: postgres://mahsoni:password@postgres_db:5432/bookbug_db?schema=public
+    networks:
+      - shared-network
+
+  frontend-app:
+    build: ./client
+    restart: always
+    image: bookbug-client-app
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend-app
+    networks:
+      - shared-network
 
 volumes:
   postgres_data:
+
+networks:
+  shared-network:
