@@ -15,9 +15,13 @@ services:
       - shared-network
 
   backend-app:
-    build: ./server/Dockerfile.dev
+    build:
+      context: ./server/
+      dockerfile: Dockerfile.dev
     restart: always
     image: bookbug-server-app
+    volumes:
+      - ./server:/app/
     ports:
       - "5000:5000"
     depends_on:
@@ -28,9 +32,13 @@ services:
       - shared-network
 
   frontend-app:
-    build: ./client/Dockerfile.dev
+    build:
+      context: ./client/
+      dockerfile: Dockerfile.dev
     restart: always
     image: bookbug-client-app
+    volumes:
+      - ./client:/app/
     ports:
       - "3000:3000"
     depends_on:
