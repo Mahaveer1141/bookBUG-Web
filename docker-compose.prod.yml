@@ -15,7 +15,7 @@ services:
       - shared-network
 
   backend-app:
-    build: ./server
+    build: ./server/Dockerfile.prod
     restart: always
     image: bookbug-server-app
     ports:
@@ -28,7 +28,7 @@ services:
       - shared-network
 
   frontend-app:
-    build: ./client
+    build: ./client/Dockerfile.prod
     restart: always
     image: bookbug-client-app
     ports:
