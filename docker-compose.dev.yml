@@ -21,7 +21,7 @@ services:
     restart: always
     image: bookbug-server-app
     volumes:
-      - ./server:/app/
+      - ./server:/server/
     ports:
       - "5000:5000"
     depends_on:
@@ -38,7 +38,7 @@ services:
     restart: always
     image: bookbug-client-app
     volumes:
-      - ./client:/app/
+      - ./client:/client/
     ports:
       - "3000:3000"
     depends_on:
