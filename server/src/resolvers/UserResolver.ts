@@ -54,7 +54,7 @@ export class UserResolver {
   async login(
     @Arg("name") name: string,
     @Arg("email") email: string,
-    @Arg("imageUrl") imageUrl: string
+    @Arg("imageUrl") imageUrl: string,
   ) {
     const curUser = {
       displayName: name,
@@ -72,7 +72,7 @@ export class UserResolver {
       const accessToken = generateAccessToken(data);
       const refreshToken = jwt.sign(
         data,
-        process.env.REFRESH_TOKEN_SECRET || ""
+        process.env.REFRESH_TOKEN_SECRET || "",
       );
       const response: Tokens = {
         accessToken: accessToken,
@@ -103,7 +103,7 @@ export class UserResolver {
     @Ctx() { req }: MyContext,
     @Arg("username") username: string,
     @Arg("displayName") displayName: string,
-    @Arg("bio") bio: string
+    @Arg("bio") bio: string,
   ): Promise<UserResponse | undefined> {
     const id = Number(req.user?.userID);
     const data = await Users.findOne({ username });
@@ -137,7 +137,7 @@ export class UserResolver {
   @Query(() => [Users], { nullable: true })
   async getSearchUsers(
     @Arg("detail") deatil: String,
-    @Ctx() { req }: MyContext
+    @Ctx() { req }: MyContext,
   ) {
     const userID = req.user?.userID;
     const data = await getConnection().query(`
@@ -177,7 +177,7 @@ export class UserResolver {
       bookId: bookId,
       userId: Number(userID),
     };
-    const data = await Library.delete(book);
+    const data = await Library.delete(book as any);
     if (data.affected === 0) {
       await Library.create(book).save();
       return "Added";
@@ -188,7 +188,7 @@ export class UserResolver {
   @Query(() => [String], { nullable: true })
   async getBooksId(@Arg("id") id: number) {
     const data = await getConnection().query(
-      `select "bookId" from library where ("userId" = ${id})`
+      `select "bookId" from library where ("userId" = ${id})`,
     );
     let response: any = [];
     data.forEach((element: any) => {

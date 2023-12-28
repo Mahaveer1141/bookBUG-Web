@@ -9,13 +9,13 @@ export class FollowResovler {
   @Mutation(() => String)
   async makeFollow(
     @Ctx() { req }: MyContext,
-    @Arg("followerId") followingId: number
+    @Arg("followerId") followingId: number,
   ) {
     const follows = {
       followerId: Number(req.user?.userID),
       followingId: followingId,
     };
-    const data = await Follows.delete(follows);
+    const data = await Follows.delete(follows as any);
     if (data.affected === 0) {
       await Follows.create(follows).save();
       return "Followed";
@@ -42,7 +42,7 @@ export class FollowResovler {
   @Query(() => [Users])
   async getFollowings(
     @Arg("userId") userId: number,
-    @Ctx() { req }: MyContext
+    @Ctx() { req }: MyContext,
   ) {
     const data = await getConnection().query(`
      select 
