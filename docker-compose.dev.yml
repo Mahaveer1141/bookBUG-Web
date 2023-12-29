@@ -28,6 +28,8 @@ services:
       - postgres_db
     environment:
       DATABASE_URL: postgres://mahsoni:password@postgres_db:5432/bookbug_db?schema=public
+      ACCESS_TOKEN_SECRET: qawesrdijokp9i8u7y65rdecfghjkpl0-9876543567890oijuhb
+      REFRESH_TOKEN_SECRET: 5634782903-edocijsnkmeoplo0iuiklp[uyvghbjnkm]
     networks:
       - shared-network
 
