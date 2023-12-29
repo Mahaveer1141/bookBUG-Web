@@ -8,7 +8,7 @@ import {
 import { TokenRefreshLink } from "apollo-link-token-refresh";
 import jwtDecode from "jwt-decode";
 import cookie from "cookie";
-import { API_URL } from "./constants";
+import { SERVER_API_URL } from "./constants";
 
 export const createClient = (ctx) => {
   const req = ctx.req;
@@ -41,7 +41,7 @@ export const createClient = (ctx) => {
         return () => {
           if (handle) handle.unsubscribe();
         };
-      })
+      }),
   );
 
   return new ApolloClient({
@@ -68,7 +68,7 @@ export const createClient = (ctx) => {
           }
         },
         fetchAccessToken: () => {
-          return fetch(`${API_URL}/token`, {
+          return fetch(`${SERVER_API_URL}/token`, {
             method: "POST",
             headers: {
               Accept: "application/json",
@@ -82,7 +82,7 @@ export const createClient = (ctx) => {
         handleFetch: (accessToken) => {
           res.setHeader(
             "Set-Cookie",
-            cookie.serialize("accessToken", accessToken)
+            cookie.serialize("accessToken", accessToken),
           );
         },
         handleError: (err) => {
@@ -92,7 +92,7 @@ export const createClient = (ctx) => {
       }),
       requestLink,
       new HttpLink({
-        uri: `${API_URL}/graphql`,
+        uri: `${SERVER_API_URL}/graphql`,
       }),
     ]),
     cache: new InMemoryCache(),
